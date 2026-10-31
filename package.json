@@ -1,0 +1,16 @@
+{
+  "name": "brand-prompt-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Creative prompt builder with brand extraction from a URL or screenshot using Claude, OpenAI, or Kimi.",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env server.js",
+    "start": "node server.js"
+  },
+  "engines": { "node": ">=20.6" },
+  "dependencies": {
+    "@sparticuz/chromium": "^131.0.0",
+    "puppeteer-core": "^23.11.1"
+  }
+}

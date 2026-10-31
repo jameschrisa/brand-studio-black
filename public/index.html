@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brand Prompt Studio</title>
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="camera-data.js"></script>
+<script src="caption-data.js"></script>
+<link rel="stylesheet" href="caption-preview.css">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg-2:#fafafa; --line:#ebebeb; --line-2:#d9d9d9;
+  --fg:#000000; --fg-2:#4d4d4d; --fg-3:#8f8f8f;
+  --blue:#0070f3; --blue-bg:#eef5ff; --green:#0a7d33;
+  --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+
+header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(8px);-webkit-backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1240px;margin:0 auto;padding:0 24px;height:56px;display:flex;align-items:center;gap:12px}
+.logo{width:22px;height:22px}
+.title{font-weight:600;letter-spacing:-.01em}
+.slash{color:var(--line-2);font-size:20px;font-weight:300}
+.crumb{color:var(--fg-2)}
+.bar .spacer{flex:1}
+.kbd{font-family:var(--mono);font-size:12px;color:var(--fg-3)}
+
+.hero{max-width:1240px;margin:0 auto;padding:40px 24px 8px}
+.hero h1{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.04em;font-weight:600;margin:0 0 8px}
+.hero p{color:var(--fg-2);margin:0;max-width:60ch;font-size:15px}
+
+.brands{max-width:1240px;margin:0 auto;padding:24px 24px 0}
+.brand-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.brand-row::-webkit-scrollbar{display:none}
+.brand{flex:0 0 auto;display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);cursor:pointer;color:var(--fg-2);transition:border-color .15s,color .15s,background .15s}
+.brand:hover{border-color:var(--line-2);color:var(--fg)}
+.brand[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:#fff}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+
+main{max-width:1240px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;align-items:start}
+
+.panel{border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.panel-head h2{font-size:14px;font-weight:600;margin:0}
+.panel-head .meta{font-family:var(--mono);font-size:12px;color:var(--fg-3)}
+
+fieldset{border:0;margin:0;padding:20px;border-bottom:1px solid var(--line)}
+fieldset:last-of-type{border-bottom:0}
+legend{float:left;width:100%;padding:0;margin:0 0 14px;font-size:13px;font-weight:600}
+legend span{font-weight:400;color:var(--fg-3);margin-left:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;clear:both}
+.full{grid-column:1/-1}
+label{display:block;font-size:13px;color:var(--fg-2);margin-bottom:6px}
+input[type=text],select,textarea{width:100%;height:38px;padding:0 12px;border:1px solid var(--line-2);border-radius:8px;background:var(--bg);transition:border-color .15s,box-shadow .15s}
+textarea{height:auto;min-height:62px;padding:9px 12px;resize:vertical;line-height:1.45}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238f8f8f' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+input:hover,select:hover,textarea:hover{border-color:#bdbdbd}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.hint{font-size:12px;color:var(--fg-3);margin-top:5px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{height:30px;padding:0 11px;border:1px solid var(--line);border-radius:6px;background:var(--bg-2);color:var(--fg-2);cursor:pointer;font-size:13px}
+.chip:hover{color:var(--fg);border-color:var(--line-2)}
+.chip[aria-pressed="true"]{background:var(--blue-bg);border-color:#b3d4ff;color:var(--blue)}
+
+.zone{clear:both;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.zone button{border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer;padding:8px 6px 6px;color:var(--fg-2);font-size:12px}
+.zone button[aria-pressed="true"]{border-color:var(--fg);color:var(--fg)}
+.zone svg{display:block;width:100%;height:44px;margin-bottom:4px}
+.zone rect.frame{fill:var(--bg-2);stroke:var(--line-2)}
+.zone rect.text{fill:var(--line-2)}
+.zone button[aria-pressed="true"] rect.text{fill:var(--blue)}
+
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;padding:2px;gap:2px;background:var(--bg-2)}
+.seg button{height:26px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:12px}
+.seg button[aria-pressed="true"]{background:var(--bg);color:var(--fg);box-shadow:0 0 0 1px var(--line-2)}
+.legend-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;clear:both}
+.legend-row legend{float:none;width:auto;margin:0}
+.count-note{font-size:12px;color:var(--fg-3);font-family:var(--mono)}
+.num{display:flex;align-items:center;border:1px solid var(--line-2);border-radius:8px;height:38px;overflow:hidden}
+.num button{width:36px;height:100%;border:0;background:var(--bg-2);cursor:pointer;color:var(--fg-2);font-size:16px}
+.num button:hover{color:var(--fg)}
+.num output{flex:1;text-align:center;font-family:var(--mono);font-size:13px}
+
+.actions{display:flex;gap:8px;flex-wrap:wrap;padding:16px 20px;border-top:1px solid var(--line);background:var(--bg-2);border-radius:0 0 12px 12px}
+.btn{height:34px;padding:0 14px;border-radius:8px;border:1px solid var(--line-2);background:var(--bg);cursor:pointer;font-weight:500;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:#bdbdbd}
+.btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
+.btn.primary:hover{background:#333}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--fg-2)}
+.btn.ghost:hover{color:var(--fg);background:var(--bg)}
+.btn svg{width:14px;height:14px}
+
+.preview{position:sticky;top:76px}
+.tabs{display:flex;gap:2px}
+.tab{height:28px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:13px}
+.tab[aria-selected="true"]{background:var(--bg-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+pre{margin:0;padding:20px;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:calc(100vh - 230px);overflow:auto;color:var(--fg-2)}
+pre .h{color:var(--fg);font-weight:500}
+pre .v{color:var(--fg);background:var(--blue-bg);border-radius:3px;padding:0 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--fg-3);font-family:var(--mono)}
+.legend{display:flex;gap:14px;align-items:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--fg);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;transition:opacity .2s,transform .2s;pointer-events:none;z-index:20;display:flex;gap:8px;align-items:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast svg{width:14px;height:14px;color:#4ade80}
+
+.mobile-copy{display:none}
+
+/* Analyze panel */
+.studio{max-width:1240px;margin:0 auto;padding:24px 24px 0}
+.studio-body{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;padding:20px}
+.studio-side{display:flex;flex-direction:column;gap:14px}
+.drop{border:1px dashed var(--line-2);border-radius:10px;background:var(--bg-2);min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;cursor:pointer;color:var(--fg-2);font-size:13px;transition:border-color .15s,background .15s;position:relative}
+.drop:hover,.drop.over{border-color:var(--fg);background:#f5f5f5}
+.drop strong{color:var(--fg)}
+.drop img{max-height:160px;max-width:100%;border-radius:6px;border:1px solid var(--line);display:block}
+.drop .clear{position:absolute;top:8px;right:8px}
+.status-line{font-size:12px;color:var(--fg-3);font-family:var(--mono)}
+.status-line.err{color:#c4132f}
+.status-line .ok{color:var(--green)}
+.btn.wide{width:100%;justify-content:center;height:40px;font-size:14px}
+.btn[disabled]{opacity:.5;cursor:default}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result{border-top:1px solid var(--line);padding:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 28px}
+.result h3{font-size:13px;font-weight:600;margin:0 0 6px}
+.result p{margin:0;color:var(--fg-2);font-size:13.5px}
+.result .wide{grid-column:1/-1}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.sw{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:6px 10px 6px 6px;font-size:12px}
+.sw i{width:26px;height:26px;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);flex:0 0 auto}
+.sw b{display:block;font-weight:500;color:var(--fg)}
+.sw span{font-family:var(--mono);color:var(--fg-3)}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--fg-2);background:var(--bg-2)}
+.says{margin:6px 0 0;padding:0;list-style:none}
+.says li{font-size:13px;color:var(--fg-2);padding:2px 0}
+.result-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:4px}
+@media (max-width:920px){.studio-body,.result{grid-template-columns:1fr}}
+
+@media (max-width:920px){
+  main{grid-template-columns:1fr}
+  .preview{position:static}
+  pre{max-height:none}
+  .mobile-copy{display:flex;position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;justify-content:center;height:44px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+  body{padding-bottom:80px}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .zone{grid-template-columns:repeat(2,1fr)}
+  .bar,.hero,.brands,.studio,main{padding-left:16px;padding-right:16px}
+  .kbd{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* App tabs */
+.apptabs{max-width:1240px;margin:0 auto;padding:20px 24px 0}
+.apptabs .tl{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.apptab{height:38px;padding:0 14px;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:14px;font-weight:500}
+.apptab:hover{color:var(--fg)}
+.apptab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--fg)}
+
+/* Motion panel */
+.mmain{max-width:1240px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;align-items:start}
+.seg.wrap{display:flex;flex-wrap:wrap}
+.seg.wrap button{flex:1 1 auto;height:28px}
+.pick{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--bg)}
+.pick>summary{cursor:pointer;padding:10px 12px;display:flex;gap:10px;justify-content:space-between;align-items:center;font-size:13px;list-style:none}
+.pick>summary::-webkit-details-marker{display:none}
+.pick>summary::before{content:"\25B8";color:var(--fg-3);margin-right:-2px}
+.pick[open]>summary::before{content:"\25BE"}
+.pick .pl{font-weight:500;flex:0 0 auto}
+.pick .pv{color:var(--fg-3);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+.pick .pbody{padding:0 12px 12px}
+.pick .ptools{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:300px;overflow:auto;padding:2px}
+.pgrid.wide{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));max-height:440px}
+.pcard{text-align:left;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:9px 10px;cursor:pointer;color:var(--fg-2);display:block;min-width:0}
+.pcard:hover{border-color:var(--line-2)}
+.pcard[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-bg)}
+.pcard b{display:block;font-weight:500;font-size:13px;color:var(--fg)}
+.pcard span.ph{display:block;font-size:12px;color:var(--fg-3);margin-top:2px}
+.pvwrap{overflow:hidden;border-radius:6px;margin-bottom:8px;background:#111;display:flex;align-items:center;justify-content:center;position:relative}
+.pvbig:empty{display:none}
+.pvwrap .cap-prev{height:92px;font-size:15px;padding:8px 10px}
+.pvbig .cap-prev{height:140px;font-size:26px}
+.pvbig{min-height:96px;overflow:hidden;border-radius:8px;margin-top:10px;background:#111;display:flex;align-items:center;justify-content:center;padding:8px}
+.pbox{margin-top:10px;font-family:var(--mono);font-size:12px;line-height:1.5;background:var(--bg-2);color:var(--fg-2);min-height:62px}
+.pnone{font-size:12px;color:var(--fg-3);padding:8px 2px}
+.src-credit{margin-top:6px}
+.src-credit a,.pnote a{color:var(--blue)}
+.pnote{font-size:12px;color:#b45309}
+@media (max-width:920px){.mmain{grid-template-columns:1fr}}
+@media (max-width:560px){.apptabs,.mmain{padding-left:16px;padding-right:16px}.pgrid,.pgrid.wide{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 22 20H2L12 2Z" fill="#000"/></svg>
+    <span class="slash">/</span>
+    <span class="title">Brand Prompt Studio</span>
+    <span class="slash">/</span>
+    <span class="crumb" id="crumb">Creative + overlays</span>
+    <span class="spacer"></span>
+    <span class="kbd">⌘ + Enter to copy</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Build an on-brand creative prompt in one pass.</h1>
+  <p>Pull a brand from a website or image, or pick a saved one. Adjust the brief, then copy a prompt that returns an image direction, hooks, titles, and an overlay spec.</p>
+</section>
+
+<section class="brands" aria-label="Brand">
+  <div class="brand-row" id="brandRow" role="group"></div>
+</section>
+
+<div class="apptabs">
+  <div class="tl" role="tablist" aria-label="Workspace" id="appTabs">
+    <button type="button" class="apptab" role="tab" id="tab-image" aria-controls="panel-image" aria-selected="true" data-app="image">Image brief</button>
+    <button type="button" class="apptab" role="tab" id="tab-motion" aria-controls="panel-motion" aria-selected="false" tabindex="-1" data-app="motion">Motion &amp; captions</button>
+  </div>
+</div>
+
+<div id="panel-image" role="tabpanel" aria-labelledby="tab-image">
+<section class="studio" aria-label="Pull a brand">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Pull a brand from a website or image</h2>
+      <span class="status-line" id="serverStatus">Connecting…</span>
+    </div>
+    <div class="studio-body">
+      <div>
+        <div class="legend-row" style="margin-bottom:12px">
+          <div class="seg" id="srcSeg" role="group" aria-label="Source">
+            <button type="button" data-src="url" aria-pressed="true">Website</button>
+            <button type="button" data-src="image" aria-pressed="false">Image</button>
+          </div>
+          <span class="status-line" id="srcHint">We read the page copy, CSS colors and fonts<span id="shotHint"></span>.</span>
+        </div>
+        <div id="srcUrl">
+          <label for="anUrl">Website URL</label>
+          <input type="text" id="anUrl" placeholder="https://example.com" inputmode="url" autocapitalize="off" spellcheck="false">
+        </div>
+        <div id="srcImage" hidden>
+          <label>Screenshot, ad, or brand image</label>
+          <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose an image">
+            <div id="dropEmpty"><strong>Drop an image</strong>, paste one, or click to choose<br><span class="status-line">PNG, JPEG, or WebP. Large images are resized.</span></div>
+          </div>
+          <input type="file" id="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+        </div>
+        <div style="margin-top:12px">
+          <label for="anNotes">Context <span style="color:var(--fg-3)">optional</span></label>
+          <input type="text" id="anNotes" placeholder="e.g. Focus on the new wellness line, not the corporate site">
+        </div>
+      </div>
+      <div class="studio-side">
+        <div>
+          <label for="anProvider">Model</label>
+          <select id="anProvider"></select>
+        </div>
+        <div>
+          <label>Depth</label>
+          <div class="seg" id="depthSeg" role="group" aria-label="Depth">
+            <button type="button" data-depth="quick" aria-pressed="true">Quick</button>
+            <button type="button" data-depth="deep" aria-pressed="false">Deep read</button>
+          </div>
+          <div class="hint" id="modelHint"></div>
+        </div>
+        <div id="keyRow" hidden>
+          <label for="anKey">Access key</label>
+          <input type="text" id="anKey" autocomplete="off" spellcheck="false" placeholder="Set by ACCESS_KEY on the server">
+        </div>
+        <button type="button" class="btn primary wide" id="analyze">Analyze brand</button>
+        <span class="status-line" id="anStatus" aria-live="polite"></span>
+      </div>
+    </div>
+    <div class="result" id="result" hidden></div>
+  </div>
+</section>
+
+<main>
+  <form class="panel" id="form" autocomplete="off" onsubmit="return false">
+    <div class="panel-head">
+      <h2>Brief</h2>
+      <span class="meta" id="savedState">Preset</span>
+    </div>
+
+    <fieldset>
+      <legend>Brand</legend>
+      <div class="grid">
+        <div><label for="brandName">Name</label><input type="text" id="brandName" data-k="brandName"></div>
+        <div><label for="personality">Personality</label><input type="text" id="personality" data-k="personality" placeholder="3 words"></div>
+        <div class="full"><label for="audience">Audience</label><input type="text" id="audience" data-k="audience" placeholder="Who they are and what they care about"></div>
+        <div class="full"><label for="essence">Brand essence <span style="color:var(--fg-3)">optional</span></label><textarea id="essence" data-k="essence" rows="2" placeholder="The core idea and feeling, in 1–2 sentences"></textarea></div>
+        <div class="full"><label for="voice">Brand voice <span style="color:var(--fg-3)">optional</span></label><textarea id="voice" data-k="voice" rows="3" placeholder="How the brand sounds, example phrases, and what it never says"></textarea></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Campaign</legend>
+      <div class="grid">
+        <div class="full"><label for="message">Core message</label><textarea id="message" data-k="message" rows="2" placeholder="One sentence"></textarea></div>
+        <div>
+          <label for="format">Platform and format</label>
+          <select id="format" data-k="format">
+            <option>Instagram feed, 4:5</option>
+            <option>Instagram or TikTok story, 9:16</option>
+            <option>LinkedIn post, 1.91:1</option>
+            <option>LinkedIn square, 1:1</option>
+            <option>X / Twitter post, 16:9</option>
+            <option>YouTube thumbnail, 16:9</option>
+            <option>Web hero banner, 21:9</option>
+            <option>Email header, 3:1</option>
+          </select>
+        </div>
+        <div>
+          <label for="reaction">Desired reaction</label>
+          <select id="reaction" data-k="reaction">
+            <option>Stop scrolling and read</option>
+            <option>Feel curious and click</option>
+            <option>Trust the brand</option>
+            <option>Register or sign up</option>
+            <option>Share with a colleague</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Visual direction</legend>
+      <div class="grid">
+        <div class="full">
+          <label>Style</label>
+          <div class="chips" id="styleChips"></div>
+          <input type="text" id="style" data-k="style" style="margin-top:8px" aria-label="Style, editable">
+        </div>
+        <div class="full"><label for="palette">Palette</label><input type="text" id="palette" data-k="palette" placeholder="2–3 brand colors + 1 pop accent"></div>
+        <div><label for="mood">Mood</label><input type="text" id="mood" data-k="mood"></div>
+        <div><label for="motif">Signature motif <span style="color:var(--fg-3)">optional</span></label><input type="text" id="motif" data-k="motif"></div>
+        <div><label for="typography">Typography <span style="color:var(--fg-3)">optional</span></label><input type="text" id="typography" data-k="typography" placeholder="Typefaces or their character"></div>
+        <div><label for="imagery">Imagery <span style="color:var(--fg-3)">optional</span></label><input type="text" id="imagery" data-k="imagery" placeholder="What photos or illustrations show"></div>
+        <div class="full"><label for="avoid">Avoid</label><textarea id="avoid" data-k="avoid" rows="2"></textarea><div class="hint">Change this per campaign to steer clear of generic AI looks.</div></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Descriptors <span>adjectives that define the output</span></legend>
+      <div class="grid">
+        <div class="full">
+          <div class="chips" id="adjChips"></div>
+          <input type="text" id="adjCustom" data-k="adjCustom" style="margin-top:8px" placeholder="Add your own, separated by commas">
+          <div class="hint" id="adjHint">Pick up to 6. Fewer, sharper words steer better than long lists.</div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <div class="legend-row">
+        <legend id="camLegend">Camera and framing</legend>
+        <div class="seg" id="camMode" role="group" aria-label="Creative type"></div>
+      </div>
+      <div class="grid" id="camGrid"></div>
+      <div class="hint" style="margin-top:10px">Options follow the style you chose. Leave any field on Auto to let the image tool decide.</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Text zone <span>where overlays will sit</span></legend>
+      <div class="zone" id="zone"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Output</legend>
+      <div class="grid">
+        <div><label>Hooks</label><div class="num" data-k="hooks"><button type="button" data-d="-1" aria-label="Fewer hooks">−</button><output>5</output><button type="button" data-d="1" aria-label="More hooks">+</button></div></div>
+        <div><label>Max words per hook</label><div class="num" data-k="hookWords"><button type="button" data-d="-1" aria-label="Fewer words">−</button><output>7</output><button type="button" data-d="1" aria-label="More words">+</button></div></div>
+        <div><label>Titles</label><div class="num" data-k="titles"><button type="button" data-d="-1" aria-label="Fewer titles">−</button><output>5</output><button type="button" data-d="1" aria-label="More titles">+</button></div></div>
+        <div><label>Max words per title</label><div class="num" data-k="titleWords"><button type="button" data-d="-1" aria-label="Fewer words">−</button><output>5</output><button type="button" data-d="1" aria-label="More words">+</button></div></div>
+        <div class="full">
+          <label>Extras</label>
+          <div class="chips" id="extras">
+            <button type="button" class="chip" data-x="ab" aria-pressed="false">A/B second direction</button>
+            <button type="button" class="chip" data-x="cta" aria-pressed="false">CTA button copy</button>
+            <button type="button" class="chip" data-x="alt" aria-pressed="false">Alt text</button>
+            <button type="button" class="chip" data-x="neg" aria-pressed="false">Negative prompt</button>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="button" class="btn primary" id="saveBrand">Save brand</button>
+      <button type="button" class="btn" id="resetBrand">Reset to preset</button>
+      <span style="flex:1"></span>
+      <button type="button" class="btn ghost" id="deleteBrand" hidden>Delete brand</button>
+    </div>
+  </form>
+
+  <section class="panel preview" aria-label="Prompt preview">
+    <div class="panel-head">
+      <div class="tabs" role="tablist" id="imgTabs" aria-label="Prompt length">
+        <button class="tab" role="tab" aria-selected="true" data-view="full">Full prompt</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="compact">Compact</button>
+      </div>
+      <button type="button" class="btn primary" id="copy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy prompt
+      </button>
+    </div>
+    <pre id="out" aria-live="polite"></pre>
+    <div class="foot">
+      <div class="legend"><span><i style="background:var(--blue-bg);box-shadow:inset 0 0 0 1px #b3d4ff"></i>Your inputs</span><span><i style="background:#fff7ed;box-shadow:inset 0 0 0 1px #fed7aa"></i>Empty</span></div>
+      <span id="count">0 words</span>
+    </div>
+  </section>
+</main>
+</div>
+
+<div id="panel-motion" role="tabpanel" aria-labelledby="tab-motion" hidden>
+<div class="mmain">
+  <form class="panel" id="mform" autocomplete="off" onsubmit="return false">
+    <div class="panel-head">
+      <h2>Motion brief</h2>
+      <span class="meta">Brand follows the chips above</span>
+    </div>
+
+    <fieldset>
+      <legend>Prompt type</legend>
+      <div class="seg wrap" data-mseg="type" role="group" aria-label="Prompt type">
+        <button type="button" data-v="shot" aria-pressed="true">Video shot</button>
+        <button type="button" data-v="caption" aria-pressed="false">Caption overlay</button>
+        <button type="button" data-v="both" aria-pressed="false">Shot + captions</button>
+      </div>
+    </fieldset>
+
+    <fieldset data-types="shot both">
+      <legend>Shot</legend>
+      <div class="grid">
+        <div class="full"><label for="m_scene">Scene and subject</label><textarea id="m_scene" data-m="scene" rows="3" placeholder="Who or what is in frame, what they do, where"></textarea></div>
+        <div class="full">
+          <label>Reference</label>
+          <div class="seg wrap" data-mseg="ref" role="group" aria-label="Reference">
+            <button type="button" data-v="text" aria-pressed="true">Text to video</button>
+            <button type="button" data-v="image" aria-pressed="false">Animate my image</button>
+          </div>
+        </div>
+        <div class="full"><label for="m_look">Look</label><input type="text" id="m_look" data-m="look" placeholder="Uses the brand style, mood and palette"><div class="hint">Leave empty to use the brand.</div></div>
+        <div><label for="m_model">Target model</label>
+          <select id="m_model" data-m="model"><option>Any video model</option><option>Seedance</option><option>Veo</option><option>Kling</option><option>Runway</option><option>Sora</option><option>Luma</option><option>Hailuo</option></select></div>
+        <div><label for="m_ratio">Aspect ratio</label>
+          <select id="m_ratio" data-m="ratio"><option>9:16</option><option>16:9</option><option>1:1</option><option>4:5</option></select></div>
+        <div><label for="m_dur">Duration</label>
+          <select id="m_dur" data-m="dur"><option>5s</option><option>8s</option><option>10s</option><option>15s</option></select></div>
+      </div>
+    </fieldset>
+
+    <fieldset data-types="shot both">
+      <legend>Camera <span>each picker is optional</span></legend>
+      <div id="pkAngle"></div>
+      <div id="pkSize"></div>
+      <div id="pkMove"></div>
+      <div id="pkMove2"></div>
+      <div class="hint src-credit">Camera library from <a id="camSrc" href="https://www.kapwing.com/resources/the-complete-ai-camera-prompt-guide-77-shots-and-movements/" target="_blank" rel="noopener">Kapwing's AI Camera Prompt Guide</a></div>
+    </fieldset>
+
+    <fieldset data-types="caption both">
+      <legend>Captions</legend>
+      <div id="mCapPick"><div id="pkCap"></div></div>
+      <div class="grid" style="margin-top:14px">
+        <div class="full"><label for="m_cap">Caption text</label><textarea id="m_cap" data-m="capText" rows="4" placeholder="One line per beat"></textarea></div>
+        <div class="full"><label for="m_emph">Emphasis words</label><input type="text" id="m_emph" data-m="emph" placeholder="Comma separated"></div>
+        <div><label for="m_words">Words on screen</label>
+          <select id="m_words" data-m="words"><option>Style default</option><option>1-3</option><option>4-6</option><option>Full line</option></select></div>
+        <div><label for="m_pos">Position</label>
+          <select id="m_pos" data-m="pos"><option>Style default</option><option>Upper third</option><option>Center</option><option>Lower third</option><option>Follows subject</option></select></div>
+        <div><label for="m_case">Case</label>
+          <select id="m_case" data-m="case"><option>As written</option><option>ALL CAPS</option><option>Sentence case</option></select></div>
+        <div><label for="m_sync">Sync</label>
+          <select id="m_sync" data-m="sync"><option>To voiceover</option><option>To music beat</option><option>Fixed timing</option></select></div>
+        <div class="full"><label for="m_deliv">Delivery</label>
+          <select id="m_deliv" data-m="delivery"><option>Burned into the video</option><option>Transparent overlay (alpha)</option><option>Green screen</option><option>Motion spec (keyframes)</option><option>Code (CSS/Remotion)</option></select></div>
+        <div><label for="m_font">Font</label><input type="text" id="m_font" data-m="font" placeholder="Brand typography"></div>
+        <div><label for="m_colors">Colors</label><input type="text" id="m_colors" data-m="colors" placeholder="Brand palette"></div>
+      </div>
+    </fieldset>
+  </form>
+
+  <section class="panel preview" aria-label="Motion prompt preview">
+    <div class="panel-head">
+      <div class="tabs" role="tablist" id="mTabs" aria-label="Prompt length">
+        <button class="tab" role="tab" aria-selected="true" data-view="full">Full prompt</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="compact">Compact</button>
+      </div>
+      <button type="button" class="btn primary" id="mcopy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy prompt
+      </button>
+    </div>
+    <pre id="mout" aria-live="polite"></pre>
+    <div class="foot">
+      <div class="legend"><span><i style="background:var(--blue-bg);box-shadow:inset 0 0 0 1px #b3d4ff"></i>Your inputs</span><span><i style="background:#fff7ed;box-shadow:inset 0 0 0 1px #fed7aa"></i>Empty</span></div>
+      <span id="mcount">0 words</span>
+    </div>
+  </section>
+</div>
+</div>
+
+<button type="button" class="btn primary mobile-copy" id="copyMobile">Copy prompt</button>
+<div class="toast" id="toast" role="status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span id="toastText">Copied</span></div>
+
+<script>
+(function(){
+  const STYLES = ["Editorial 3D render","Bold flat graphic","Cinematic photo","Minimal studio product shot","Textured collage","Abstract gradient forms","Isometric illustration","Documentary photo"];
+
+  const PRESETS = {
+    f3i:{label:"F3 Insights",color:"#1e3a5f",brandName:"F3 Insights",personality:"Rigorous, governed, pragmatic",audience:"CFOs and executive teams at mid-market companies adopting AI responsibly",message:"",format:"LinkedIn post, 1.91:1",reaction:"Trust the brand",style:"Editorial 3D render",palette:"Deep navy, slate gray, clean white + one bright signal accent",mood:"Confident, calm-premium",motif:"",avoid:"Glowing robot brains, circuit-board clichés, stock handshakes, blue holograms",zone:"left"},
+    enel:{label:"Ēnel Health",color:"#0e7c86",brandName:"Ēnel Health",personality:"Evidence-led, clear, trustworthy",audience:"Health-conscious people and practitioners who want verified evidence, not hype",message:"",format:"Instagram feed, 4:5",reaction:"Trust the brand",style:"Minimal studio product shot",palette:"Ocean blue, teal, clean white + a bright aqua accent",mood:"Calm, credible, clarifying",motif:"",avoid:"Pill bottles, lab-coat stock photos, miracle-cure imagery, before/after bodies",zone:"top"},
+    humark:{label:"Humark",color:"#ff6f5e",brandName:"Humark",personality:"Human, authentic, sharp",audience:"Creators and marketers pushing back on AI-content saturation",message:"",format:"LinkedIn square, 1:1",reaction:"Feel curious and click",style:"Bold flat graphic",palette:"Dark ground, coral and aqua accents",mood:"Defiant, warm, intelligent",motif:"Enso-arc brushstroke",avoid:"Robot faces, glitch-art clichés, binary code rain, neon cyberpunk",zone:"left"},
+    puratrust:{label:"PuraTrust",color:"#2f6b4f",brandName:"PuraTrust",personality:"Verified, clinical, transparent",audience:"Peptide and wellness buyers who want suppliers they can verify",message:"",format:"Instagram feed, 4:5",reaction:"Trust the brand",style:"Minimal studio product shot",palette:"Clinical white, deep green + a restrained gold accent",mood:"Precise, reassuring",motif:"Seal or certificate mark",avoid:"Syringes, bodybuilder imagery, unlabeled vials, shady lab lighting",zone:"top"},
+    ausvrn:{label:"AU-SVRN",color:"#b8912f",brandName:"AU-SVRN",personality:"Sovereign, notarial, enduring",audience:"Partners and investors in verification infrastructure",message:"",format:"Web hero banner, 21:9",reaction:"Trust the brand",style:"Editorial 3D render",palette:"Black, warm gold, ivory",mood:"Weighty, quiet authority",motif:"Gold sovereign coin",avoid:"Crypto-bro aesthetics, neon, Bitcoin imagery, piles of gold bars",zone:"left"},
+    human:{label:"Human Centric",color:"#c75b7a",brandName:"Human Centric",personality:"Warm, present, connected",audience:"People who value real relationships and want brands that feel human, not automated",message:"",format:"Instagram feed, 4:5",reaction:"Feel curious and click",style:"Documentary photo",palette:"Warm skin tones, soft linen, muted sage + a rose accent",mood:"Intimate, hopeful, unhurried",motif:"Hands, shared glances, people side by side",avoid:"Empty rooms, lone figures staring at screens, robots, posed corporate smiles, cold blue tech lighting",zone:"bottom",
+      rules:["Feature at least two people in genuine, unposed connection: eye contact, touch, shared laughter, or working side by side","Faces and hands are the focal point; any technology stays small and secondary","Natural light, real skin texture, and people of varied ages and backgrounds"],
+      copyRule:"Every hook and title speaks to connection, belonging, or a shared moment, and addresses people as \"you\" and \"we\""},
+    sunsoul:{label:"Sun & Soul 2027",color:"#e8a33d",brandName:"Sun & Soul 2027",personality:"Warm, curious, coastal",audience:"Health and longevity enthusiasts in San Diego and beyond",message:"",format:"Instagram or TikTok story, 9:16",reaction:"Register or sign up",style:"Cinematic photo",palette:"Sun gold, warm coral, ocean blue, sand",mood:"Golden-hour optimism",motif:"Half-sun",avoid:"Generic yoga silhouettes, spa clichés, stock smiling crowds",zone:"bottom"},
+    custom:{label:"Custom",color:"#8f8f8f",brandName:"",personality:"",audience:"",message:"",format:"Instagram feed, 4:5",reaction:"Stop scrolling and read",style:"",palette:"",mood:"",motif:"",avoid:"",zone:"top"}
+  };
+
+  const ADJECTIVES = ["Bold","Vibrant","Minimal","Luxurious","Playful","Moody","Airy","Sleek","Gritty","Organic","Tactile","Futuristic","Nostalgic","Dreamy","Crisp","Energetic","Serene","Candid","Warm","Premium"];
+  const MAX_ADJ = 6;
+  const SHOT = ["Extreme close-up","Close-up","Medium close-up","Medium shot","Wide shot","Extreme wide shot"];
+  const DOF = ["Shallow (f/1.8, soft bokeh)","Moderate (f/4)","Deep (f/11, everything sharp)"];
+  const CAM = {
+    photo:{label:"Photo",legend:"Camera and framing",fields:[
+      ["shot","Shot size / zoom",SHOT],
+      ["lens","Lens",["14mm ultra-wide","24mm wide","35mm street","50mm standard","85mm portrait","100mm macro","135mm telephoto","200mm telephoto compression"]],
+      ["angle","Camera angle",["Eye level","Low angle (hero)","High angle","Overhead flat lay","Over the shoulder","Dutch tilt"]],
+      ["dof","Depth of field",DOF],
+      ["light","Lighting",["Golden hour","Soft window light","Overcast diffused","Studio softbox","Hard rim light","Blue hour","Neon practicals"]],
+      ["film","Film / finish",["Clean digital","35mm film grain","Medium format","Polaroid","Black and white"]]
+    ]},
+    render:{label:"3D",legend:"Virtual camera and render",fields:[
+      ["shot","Shot size / zoom",SHOT],
+      ["lens","Virtual lens",["24mm wide","50mm standard","85mm telephoto","Orthographic (no perspective)"]],
+      ["angle","Camera angle",["Hero three-quarter","Straight-on front","Low hero","Top-down","Isometric"]],
+      ["dof","Depth of field",DOF],
+      ["light","Lighting",["Studio three-point","Soft global illumination","Dramatic rim light","Backlit glow","Sunlit outdoor"]],
+      ["material","Materials",["Matte clay","Glossy plastic","Frosted glass","Brushed metal","Soft fabric","Mixed materials"]]
+    ]},
+    graphic:{label:"Graphic",legend:"Framing and finish",fields:[
+      ["zoom","Zoom level",["Macro detail","Tight crop","Balanced","Wide scene"]],
+      ["perspective","Perspective",["Flat 2D","Isometric","Three-quarter view","Layered depth"]],
+      ["detail","Detail level",["Minimal","Moderate","Rich and intricate"]],
+      ["texture","Texture",["Clean vector","Subtle grain","Paper","Risograph","Halftone"]],
+      ["shape","Shape language",["Geometric","Rounded and soft","Organic and fluid","Hand-drawn"]]
+    ]}
+  };
+  const ADJ_DEFAULT = {f3i:["Crisp","Premium","Sleek"],enel:["Airy","Crisp","Serene"],humark:["Bold","Tactile","Warm"],puratrust:["Crisp","Minimal","Premium"],ausvrn:["Luxurious","Moody","Premium"],sunsoul:["Warm","Vibrant","Dreamy"],human:["Warm","Candid","Tactile"],custom:[]};
+  const CAM_DEFAULT = {human:{shot:"Medium close-up",lens:"50mm standard",dof:"Shallow (f/1.8, soft bokeh)",light:"Soft window light"},sunsoul:{lens:"35mm street",light:"Golden hour"},enel:{light:"Soft window light"}};
+  function detectMode(style){
+    if(/photo|cinematic|documentary|shot/i.test(style||"")) return "photo";
+    if(/3d|render/i.test(style||"")) return "render";
+    return "graphic";
+  }
+  function camMode(){ return state.camMode || detectMode(state.style); }
+
+  const ZONES = {top:"top third",bottom:"bottom third",left:"left half",right:"right half"};
+  const ZONE_SVG = {
+    top:'<rect class="text" x="10" y="8" width="44" height="6" rx="1"/><rect class="text" x="10" y="17" width="30" height="4" rx="1"/>',
+    bottom:'<rect class="text" x="10" y="28" width="44" height="6" rx="1"/><rect class="text" x="10" y="37" width="30" height="4" rx="1"/>',
+    left:'<rect class="text" x="8" y="14" width="22" height="5" rx="1"/><rect class="text" x="8" y="22" width="16" height="4" rx="1"/><rect class="text" x="8" y="29" width="18" height="4" rx="1"/>',
+    right:'<rect class="text" x="40" y="14" width="22" height="5" rx="1"/><rect class="text" x="40" y="22" width="16" height="4" rx="1"/><rect class="text" x="40" y="29" width="18" height="4" rx="1"/>'
+  };
+  const LIMITS = {hooks:[1,10],hookWords:[3,12],titles:[1,10],titleWords:[2,8]};
+  const STORE = "promptBuilder.v1";
+
+  const $ = s => document.querySelector(s);
+  const store = load();
+  let brands = Object.assign({}, PRESETS, store.custom || {});
+  let current = store.last && brands[store.last] ? store.last : "f3i";
+  let state = {};
+  let view = "full";
+
+  function load(){ try{ return JSON.parse(localStorage.getItem(STORE)) || {}; }catch(e){ return {}; } }
+  function persist(){
+    try{ localStorage.setItem(STORE, JSON.stringify(store)); }catch(e){}
+  }
+
+  function brandData(key){
+    const base = brands[key];
+    const edit = store.edits && store.edits[key];
+    return Object.assign({hooks:5,hookWords:7,titles:5,titleWords:5,extras:[],adjectives:(ADJ_DEFAULT[key]||[]).slice(),essence:"",voice:"",typography:"",imagery:"",adjCustom:"",camMode:"",cam:Object.assign({},CAM_DEFAULT[key]||{})}, base, edit || {});
+  }
+
+  /* Brand chips */
+  function renderBrands(){
+    const row = $("#brandRow"); row.innerHTML = "";
+    Object.keys(brands).forEach(k => {
+      const b = brands[k];
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.className = "brand"; btn.dataset.key = k;
+      btn.setAttribute("aria-pressed", k === current);
+      btn.innerHTML = '<span class="dot"></span><span></span>';
+      btn.querySelector(".dot").style.background = b.color || "#8f8f8f";
+      btn.lastChild.textContent = b.label;
+      btn.onclick = () => selectBrand(k);
+      row.appendChild(btn);
+    });
+  }
+
+  function selectBrand(k){
+    current = k; store.last = k; persist();
+    state = JSON.parse(JSON.stringify(brandData(k)));
+    document.querySelectorAll(".brand").forEach(b => b.setAttribute("aria-pressed", b.dataset.key === k));
+    fillForm(); render();
+  }
+
+  /* Form */
+  function fillForm(){
+    document.querySelectorAll("[data-k]").forEach(el => {
+      const k = el.dataset.k;
+      if(el.classList.contains("num")) el.querySelector("output").textContent = state[k];
+      else el.value = state[k] ?? "";
+    });
+    document.querySelectorAll("#styleChips .chip").forEach(c => c.setAttribute("aria-pressed", c.textContent === state.style));
+    document.querySelectorAll("#zone button").forEach(b => b.setAttribute("aria-pressed", b.dataset.z === state.zone));
+    fillAdj(); buildCam();
+    document.querySelectorAll("#extras .chip").forEach(c => c.setAttribute("aria-pressed", (state.extras||[]).includes(c.dataset.x)));
+    $("#deleteBrand").hidden = !!PRESETS[current];
+    $("#resetBrand").hidden = !PRESETS[current];
+    $("#crumb").textContent = brands[current].label;
+    updateSaved();
+  }
+
+  function updateSaved(){
+    const saved = JSON.stringify(brandData(current));
+    const dirty = JSON.stringify(state) !== saved;
+    const edited = store.edits && store.edits[current];
+    $("#savedState").textContent = dirty ? "Unsaved changes" : (!PRESETS[current] ? "Saved brand" : edited ? "Edited preset" : "Preset");
+  }
+
+  function buildStyleChips(){
+    const wrap = $("#styleChips");
+    STYLES.forEach(s => {
+      const c = document.createElement("button");
+      c.type = "button"; c.className = "chip"; c.textContent = s;
+      c.onclick = () => { state.style = s; $("#style").value = s; fillChips(); buildCam(); render(); };
+      wrap.appendChild(c);
+    });
+  }
+  function fillChips(){ document.querySelectorAll("#styleChips .chip").forEach(c => c.setAttribute("aria-pressed", c.textContent === state.style)); }
+
+  function buildAdj(){
+    const wrap = $("#adjChips");
+    ADJECTIVES.forEach(a => {
+      const c = document.createElement("button");
+      c.type = "button"; c.className = "chip"; c.textContent = a;
+      c.onclick = () => {
+        const list = state.adjectives || (state.adjectives = []);
+        if(list.includes(a)) state.adjectives = list.filter(x => x !== a);
+        else if(list.length >= MAX_ADJ){ toast("Up to " + MAX_ADJ + " descriptors"); return; }
+        else list.push(a);
+        fillAdj(); render();
+      };
+      wrap.appendChild(c);
+    });
+  }
+  function fillAdj(){
+    const list = state.adjectives || [];
+    document.querySelectorAll("#adjChips .chip").forEach(c => c.setAttribute("aria-pressed", list.includes(c.textContent)));
+  }
+
+  function buildCam(){
+    const mode = camMode(), cfg = CAM[mode];
+    $("#camLegend").textContent = cfg.legend;
+    const seg = $("#camMode"); seg.innerHTML = "";
+    [["","Auto"]].concat(Object.keys(CAM).map(k => [k, CAM[k].label])).forEach(([k,l]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = k ? l : "Auto (" + CAM[detectMode(state.style)].label + ")";
+      b.setAttribute("aria-pressed", (state.camMode||"") === k);
+      b.onclick = () => { state.camMode = k; buildCam(); render(); };
+      seg.appendChild(b);
+    });
+    const grid = $("#camGrid"); grid.innerHTML = "";
+    state.cam = state.cam || {};
+    cfg.fields.forEach(([key,label,opts]) => {
+      const d = document.createElement("div");
+      const id = "cam_" + key;
+      d.innerHTML = '<label for="'+id+'"></label><select id="'+id+'"><option value="">Auto</option></select>';
+      d.querySelector("label").textContent = label;
+      const sel = d.querySelector("select");
+      opts.forEach(o => { const op = document.createElement("option"); op.textContent = o; sel.appendChild(op); });
+      sel.value = state.cam[key] || "";
+      sel.onchange = () => { if(sel.value) state.cam[key] = sel.value; else delete state.cam[key]; render(); };
+      grid.appendChild(d);
+    });
+  }
+  function camLines(){
+    const cfg = CAM[camMode()];
+    return cfg.fields.filter(([k]) => state.cam && state.cam[k]).map(([k,l]) => [l.replace(" / zoom",""), state.cam[k]]);
+  }
+  function adjList(){
+    const extra = (state.adjCustom||"").split(",").map(x => x.trim()).filter(Boolean);
+    return (state.adjectives||[]).concat(extra).map(x => x.toLowerCase());
+  }
+
+  function buildZones(){
+    const wrap = $("#zone");
+    Object.keys(ZONES).forEach(z => {
+      const b = document.createElement("button");
+      b.type = "button"; b.dataset.z = z;
+      b.innerHTML = '<svg viewBox="0 0 70 48" aria-hidden="true"><rect class="frame" x=".5" y=".5" width="69" height="47" rx="4"/>' + ZONE_SVG[z] + '</svg>' + z[0].toUpperCase() + z.slice(1);
+      b.onclick = () => { state.zone = z; document.querySelectorAll("#zone button").forEach(x => x.setAttribute("aria-pressed", x === b)); render(); };
+      wrap.appendChild(b);
+    });
+  }
+
+  document.querySelectorAll("input[data-k],textarea[data-k],select[data-k]").forEach(el => {
+    el.addEventListener("input", () => { state[el.dataset.k] = el.value; if(el.id === "style"){ fillChips(); buildCam(); } render(); });
+  });
+  document.querySelectorAll(".num").forEach(n => {
+    n.querySelectorAll("button").forEach(b => b.onclick = () => {
+      const k = n.dataset.k, [lo,hi] = LIMITS[k];
+      state[k] = Math.min(hi, Math.max(lo, state[k] + Number(b.dataset.d)));
+      n.querySelector("output").textContent = state[k]; render();
+    });
+  });
+  document.querySelectorAll("#extras .chip").forEach(c => c.onclick = () => {
+    const x = c.dataset.x; state.extras = state.extras || [];
+    state.extras = state.extras.includes(x) ? state.extras.filter(y => y !== x) : state.extras.concat(x);
+    c.setAttribute("aria-pressed", state.extras.includes(x)); render();
+  });
+
+  /* Prompt assembly: array of [text, kind] segments; kind: h=heading, v=variable */
+  function build(){
+    const s = state, out = [];
+    const H = t => out.push([t,"h"]);
+    const T = t => out.push([t,""]);
+    const V = (val, ph) => out.push(val && val.trim() ? [val.trim(),"v"] : ["["+ph+"]","e"]);
+    const ex = s.extras || [];
+    const zone = ZONES[s.zone] || "top third";
+    const ratio = (s.format.match(/\d+(\.\d+)?:\d+/) || ["4:5"])[0];
+
+    if(view === "compact"){
+      T("Act as a creative director. For "); V(s.brandName,"brand"); T(" ("); V(s.personality,"personality"); T("), targeting "); V(s.audience,"audience"); T(", create a "); V(s.format,"format");
+      T(" visual for this message: "); V(s.message,"core message"); T(". Style: "); V(s.style,"style"); T(". Palette: "); V(s.palette,"palette"); T(". Mood: "); V(s.mood,"mood"); T(".");
+      if(s.essence && s.essence.trim()){ T(" Brand essence: "); V(s.essence,""); T("."); }
+      if(s.voice && s.voice.trim()){ T(" Voice for all copy: "); V(s.voice,""); T("."); }
+      if(s.typography && s.typography.trim()){ T(" Typography: "); V(s.typography,""); T("."); }
+      if(s.imagery && s.imagery.trim()){ T(" Imagery: "); V(s.imagery,""); T("."); }
+      const adjC = adjList(); if(adjC.length){ T(" Descriptors: "); V(adjC.join(", "),""); T("."); }
+      const camC = camLines(); if(camC.length){ T(" " + CAM[camMode()].legend + ": "); V(camC.map(x => x[1]).join(", "),""); T("."); }
+      if(s.motif) { T(" Motif: "); V(s.motif,""); T("."); }
+      T(" Avoid: "); V(s.avoid,"avoid"); T(". Keep the "); V(zone,""); T(" clean for overlay text; no rendered text or logos.");
+      (s.rules||[]).forEach(r => { T(" "); V(r,""); T("."); });
+      if(s.copyRule){ T(" Copy rule: "); V(s.copyRule,""); T("."); }
+      T("\n\nReturn: one image prompt (aspect ratio "+ratio+"), "+s.hooks+" hooks (≤"+s.hookWords+" words), "+s.titles+" titles (≤"+s.titleWords+" words), the best hook + title pairing, and a short overlay type spec.");
+      if(ex.length) T(" Also include: " + ex.map(x => ({ab:"a second contrasting direction",cta:"3 CTA button labels",alt:"alt text",neg:"a negative prompt"})[x]).join(", ") + ".");
+      return out;
+    }
+
+    H("ROLE\n"); T("You are a creative director pairing scroll-stopping visuals with short overlay copy.\n\n");
+    H("BRIEF\n");
+    T("Brand: "); V(s.brandName,"brand name"); T(" — "); V(s.personality,"3-word personality"); T("\n");
+    T("Audience: "); V(s.audience,"who + what they care about"); T("\n");
+    T("Platform & format: "); V(s.format,"format"); T("\n");
+    T("Core message: "); V(s.message,"one sentence"); T("\n");
+    T("Desired reaction: "); V(s.reaction,"reaction"); T("\n");
+    if(s.essence && s.essence.trim()){ T("Brand essence: "); V(s.essence,""); T("\n"); }
+    T("\n");
+    if(s.voice && s.voice.trim()){ H("BRAND VOICE\n"); V(s.voice,""); T("\nWrite every hook and title in this voice.\n\n"); }
+    H("VISUAL DIRECTION\n");
+    T("Style: "); V(s.style,"style"); T("\n");
+    T("Palette: "); V(s.palette,"2–3 brand colors + 1 pop accent"); T("\n");
+    T("Mood: "); V(s.mood,"mood"); T("\n");
+    if(s.typography && s.typography.trim()){ T("Typography: "); V(s.typography,""); T("\n"); }
+    if(s.imagery && s.imagery.trim()){ T("Imagery: "); V(s.imagery,""); T("\n"); }
+    const adj = adjList(); if(adj.length){ T("Descriptors: "); V(adj.join(", "),""); T("\n"); }
+    if(s.motif && s.motif.trim()){ T("Signature motif: "); V(s.motif,""); T("\n"); }
+    T("Avoid: "); V(s.avoid,"clichés, stock looks, clutter"); T("\n\n");
+    const cam = camLines();
+    if(cam.length){ H(CAM[camMode()].legend.toUpperCase() + "\n"); cam.forEach(([l,v]) => { T(l + ": "); V(v,""); T("\n"); }); T("\n"); }
+    H("COMPOSITION RULES\n");
+    T("- One clear focal subject, high contrast\n- Reserve clean negative space in the "); V(zone,""); T(" for text\n- Keep text zones free of busy detail\n- No rendered text, logos, or watermarks in the image\n");
+    (s.rules||[]).forEach(r => { T("- "); V(r,""); T("\n"); });
+    T("\n");
+    if(s.copyRule){ H("COPY RULE\n"); V(s.copyRule,""); T("\n\n"); }
+    H("DELIVER\n");
+    let n = 1;
+    T((n++)+". Image prompt: one paragraph covering subject, style, lighting, palette, camera/angle, texture, and aspect ratio "); V(ratio,""); T((cam.length || adj.length) ? ", applying the descriptors and " + (cam.length ? CAM[camMode()].legend.toLowerCase() : "style") + " specs exactly\n" : "\n");
+    T((n++)+". "); V(String(s.hooks),""); T(" hooks (≤"); V(String(s.hookWords),""); T(" words each), each using a different angle: curiosity, contrast, bold claim, question, or \"you\" benefit\n");
+    T((n++)+". "); V(String(s.titles),""); T(" overlay titles (≤"); V(String(s.titleWords),""); T(" words each), punchy, readable at thumbnail size\n");
+    T((n++)+". Best pairing: the strongest hook + title combo, with one sentence on why\n");
+    T((n++)+". Overlay spec: font style, weight, color, and placement that matches the visual" + (s.typography && s.typography.trim() ? " and the brand typography" : "") + "\n");
+    if(ex.includes("ab")) T((n++)+". Direction B: a second image prompt with a contrasting style, same message and text zone\n");
+    if(ex.includes("cta")) T((n++)+". CTA: 3 button labels, 2–3 words each, matched to the desired reaction\n");
+    if(ex.includes("alt")) T((n++)+". Alt text: one plain sentence describing the image for accessibility\n");
+    if(ex.includes("neg")) T((n++)+". Negative prompt: comma-separated terms to exclude, drawn from the Avoid list\n");
+    return out;
+  }
+
+  function esc(t){ return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function plain(){ return build().map(x => x[0]).join("").trim(); }
+
+  function render(){
+    const segs = build();
+    $("#out").innerHTML = segs.map(([t,k]) => k ? '<span class="'+k+'">'+esc(t)+'</span>' : esc(t)).join("");
+    const txt = plain();
+    const words = txt.split(/\s+/).filter(Boolean).length;
+    const empty = segs.filter(x => x[1] === "e").length;
+    $("#count").textContent = words + " words" + (empty ? " · " + empty + " empty" : "");
+    updateSaved();
+    mrender();
+  }
+
+  /* Copy */
+  async function copy(){
+    const motion = appTab === "motion";
+    const txt = motion ? mplain() : plain();
+    try{ await navigator.clipboard.writeText(txt); }
+    catch(e){
+      const ta = document.createElement("textarea"); ta.value = txt; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+    }
+    toast(motion ? "Motion prompt copied" : "Prompt copied");
+  }
+  function toast(msg){
+    $("#toastText").textContent = msg; const t = $("#toast");
+    t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 1800);
+  }
+  $("#copy").onclick = copy; $("#copyMobile").onclick = copy;
+  document.addEventListener("keydown", e => { if((e.metaKey || e.ctrlKey) && e.key === "Enter"){ e.preventDefault(); copy(); } });
+
+  document.querySelectorAll("#imgTabs .tab").forEach(t => t.onclick = () => {
+    view = t.dataset.view;
+    document.querySelectorAll("#imgTabs .tab").forEach(x => x.setAttribute("aria-selected", x === t)); render();
+  });
+
+  /* Save / reset / delete */
+  $("#saveBrand").onclick = () => {
+    store.edits = store.edits || {}; store.custom = store.custom || {};
+    if(PRESETS[current] && current !== "custom"){
+      store.edits[current] = JSON.parse(JSON.stringify(state));
+      persist(); updateSaved(); toast(brands[current].label + " saved"); return;
+    }
+    const name = (state.brandName || "").trim();
+    if(!name){ $("#brandName").focus(); toast("Add a brand name to save"); return; }
+    let key = current !== "custom" ? current : "c_" + name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") ;
+    const brand = Object.assign({}, state, {label:name, color:state.brandColor || (brands[key] && brands[key].color) || pickColor(name)});
+    store.custom[key] = brand; brands[key] = brand; store.edits[key] = JSON.parse(JSON.stringify(state));
+    current = key; store.last = key; persist(); renderBrands(); selectBrand(key); toast(name + " saved");
+  };
+  $("#resetBrand").onclick = () => {
+    if(store.edits) delete store.edits[current];
+    persist(); selectBrand(current); toast("Reset to preset");
+  };
+  $("#deleteBrand").onclick = () => {
+    if(PRESETS[current]) return;
+    const name = brands[current].label;
+    delete brands[current]; if(store.custom) delete store.custom[current]; if(store.edits) delete store.edits[current];
+    persist(); renderBrands(); selectBrand("f3i"); toast(name + " deleted");
+  };
+  function pickColor(s){ let h = 0; for(const c of s) h = (h*31 + c.charCodeAt(0)) % 360; return "hsl("+h+",55%,45%)"; }
+
+  /* ===== Brand analysis (server) ===== */
+  const KEY_STORE = "promptBuilder.accessKey";
+  const an = { src:"url", depth:"quick", image:"", config:null, profile:null, meta:null, busy:false };
+
+  function setStatus(msg, err){ const el = $("#anStatus"); el.textContent = msg || ""; el.classList.toggle("err", !!err); }
+
+  async function loadConfig(){
+    const st = $("#serverStatus");
+    try{
+      const r = await fetch("/api/config", {cache:"no-store"});
+      if(!r.ok) throw new Error();
+      an.config = await r.json();
+    }catch(e){
+      st.textContent = "Server offline: run npm run dev";
+      st.classList.add("err");
+      $("#analyze").disabled = true;
+      $("#anProvider").innerHTML = "<option>Unavailable</option>";
+      return;
+    }
+    const sel = $("#anProvider"); sel.innerHTML = "";
+    const ready = an.config.providers.filter(p => p.configured);
+    an.config.providers.forEach(p => {
+      const o = document.createElement("option");
+      o.value = p.id; o.textContent = p.label + (p.configured ? "" : " (no key)"); o.disabled = !p.configured;
+      sel.appendChild(o);
+    });
+    const saved = localStorage.getItem("promptBuilder.provider");
+    if(saved && ready.some(p => p.id === saved)) sel.value = saved; else if(ready[0]) sel.value = ready[0].id;
+    st.innerHTML = ready.length ? '<span class="ok">●</span> ' + ready.map(p => p.label).join(", ") + " ready" : "No model keys set on the server";
+    if(!ready.length){ st.classList.add("err"); $("#analyze").disabled = true; }
+    $("#keyRow").hidden = !an.config.authRequired;
+    try{ $("#anKey").value = localStorage.getItem(KEY_STORE) || ""; }catch(e){}
+    if($("#shotHint")) $("#shotHint").textContent = an.config.screenshot ? ", plus a live screenshot" : "";
+    updateModelHint();
+  }
+
+  function updateModelHint(){
+    const p = an.config && an.config.providers.find(x => x.id === $("#anProvider").value);
+    $("#modelHint").textContent = p ? "Uses " + p.models[an.depth] : "";
+  }
+  $("#anProvider").onchange = () => { try{ localStorage.setItem("promptBuilder.provider", $("#anProvider").value); }catch(e){} updateModelHint(); };
+  $("#anKey").oninput = () => { try{ localStorage.setItem(KEY_STORE, $("#anKey").value.trim()); }catch(e){} };
+
+  document.querySelectorAll("#srcSeg button").forEach(b => b.onclick = () => setSrc(b.dataset.src));
+  function setSrc(src){
+    an.src = src;
+    document.querySelectorAll("#srcSeg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.src === src));
+    $("#srcUrl").hidden = src !== "url"; $("#srcImage").hidden = src !== "image";
+    $("#srcHint").innerHTML = src === "url" ? 'We read the page copy, CSS colors and fonts<span id="shotHint">' + (an.config && an.config.screenshot ? ", plus a live screenshot" : "") + '</span>.' : "Works with screenshots, ads, packaging, or social posts.";
+  }
+  document.querySelectorAll("#depthSeg button").forEach(b => b.onclick = () => {
+    an.depth = b.dataset.depth;
+    document.querySelectorAll("#depthSeg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    updateModelHint();
+  });
+
+  /* Image input: click, drop, or paste. Resized in the browser to keep uploads small. */
+  const drop = $("#drop"), file = $("#file");
+  drop.onclick = e => { if(!e.target.closest(".clear")) file.click(); };
+  drop.onkeydown = e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); file.click(); } };
+  file.onchange = () => file.files[0] && takeImage(file.files[0]);
+  ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if(f) takeImage(f); });
+  document.addEventListener("paste", e => {
+    const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith("image/"));
+    if(!item) return;
+    e.preventDefault(); setSrc("image"); takeImage(item.getAsFile());
+  });
+
+  function takeImage(f){
+    if(!/^image\/(png|jpeg|webp|gif)$/.test(f.type)){ setStatus("Use a PNG, JPEG, WebP, or GIF image.", true); return; }
+    const img = new Image(), url = URL.createObjectURL(f);
+    img.onload = () => {
+      const max = 1600, scale = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+      const ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+      an.image = c.toDataURL("image/jpeg", 0.86);
+      URL.revokeObjectURL(url);
+      drop.innerHTML = "";
+      const pv = document.createElement("img"); pv.src = an.image; pv.alt = "Image to analyze";
+      const clr = document.createElement("button"); clr.type = "button"; clr.className = "btn clear"; clr.textContent = "Remove";
+      clr.onclick = e => { e.stopPropagation(); an.image = ""; drop.innerHTML = '<div><strong>Drop an image</strong>, paste one, or click to choose<br><span class="status-line">PNG, JPEG, or WebP. Large images are resized.</span></div>'; };
+      drop.append(pv, clr); setStatus("");
+    };
+    img.onerror = () => setStatus("That image couldn't be read.", true);
+    img.src = url;
+  }
+
+  /* Run analysis */
+  $("#analyze").onclick = analyze;
+  $("#anUrl").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); analyze(); } });
+
+  async function analyze(){
+    if(an.busy) return;
+    const url = $("#anUrl").value.trim();
+    if(an.src === "url" && !url){ $("#anUrl").focus(); setStatus("Add a website URL to analyze.", true); return; }
+    if(an.src === "image" && !an.image){ setStatus("Add an image to analyze.", true); return; }
+    if(an.config?.authRequired && !$("#anKey").value.trim()){ $("#anKey").focus(); setStatus("Add the access key to analyze.", true); return; }
+
+    an.busy = true;
+    const btn = $("#analyze"), started = Date.now();
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Analyzing';
+    const tick = setInterval(() => setStatus("Working… " + Math.round((Date.now() - started) / 1000) + "s"), 500);
+    try{
+      const r = await fetch("/api/analyze", {
+        method:"POST",
+        headers:{ "content-type":"application/json", "x-access-key": $("#anKey").value.trim() },
+        body: JSON.stringify({
+          provider: $("#anProvider").value, depth: an.depth,
+          url: an.src === "url" ? url : "", image: an.src === "image" ? an.image : "",
+          notes: $("#anNotes").value.trim()
+        })
+      });
+      const data = await r.json().catch(() => ({ error: "The server returned an unreadable response." }));
+      if(!r.ok) throw new Error(data.error || ("Request failed with " + r.status));
+      an.profile = data.profile; an.meta = data.meta;
+      showResult();
+      setStatus(data.meta.provider + " · " + data.meta.model + " · " + data.meta.seconds + "s" + (data.meta.usedScreenshot ? " · with screenshot" : ""));
+    }catch(e){
+      setStatus(e.message, true);
+    }finally{
+      clearInterval(tick); an.busy = false; btn.disabled = false; btn.textContent = "Analyze brand";
+    }
+  }
+
+  function el(tag, cls, text){ const e = document.createElement(tag); if(cls) e.className = cls; if(text != null) e.textContent = text; return e; }
+  function block(title, ...children){ const d = el("div"); d.append(el("h3", null, title), ...children); return d; }
+  const arr = v => Array.isArray(v) ? v.filter(Boolean).map(String) : [];
+  const str = v => (v == null ? "" : String(v)).trim();
+  const validHex = h => /^#[0-9a-f]{6}$/i.test(str(h));
+
+  function showResult(){
+    const p = an.profile, box = $("#result");
+    box.innerHTML = ""; box.hidden = false;
+
+    const head = el("div", "wide");
+    head.append(el("h3", null, str(p.brandName) || "Brand profile"), el("p", null, str(p.essence)));
+    box.append(head);
+
+    const sw = el("div", "swatches");
+    (Array.isArray(p.palette) ? p.palette : []).filter(c => validHex(c.hex)).forEach(c => {
+      const s = el("div", "sw"), chip = el("i"); chip.style.background = c.hex;
+      const t = el("div"); t.append(el("b", null, str(c.name) || str(c.role)), el("span", null, c.hex.toUpperCase() + (c.role ? " · " + c.role : "")));
+      s.append(chip, t); sw.append(s);
+    });
+    box.append(Object.assign(block("Color scheme", sw), {className:"wide"}));
+
+    const v = p.voice || {};
+    const says = el("ul", "says"); arr(v.doSay).forEach(x => says.append(el("li", null, "“" + x + "”")));
+    const traits = el("div", "pills"); arr(v.traits).forEach(x => traits.append(el("span", "pill", x)));
+    box.append(block("Brand voice", el("p", null, str(v.summary)), traits, says));
+
+    const vis = el("div");
+    [["Style", p.style], ["Mood", p.mood], ["Typography", p.typography], ["Imagery", p.imagery], ["Composition", p.composition], ["Motif", p.motif]]
+      .filter(([, x]) => str(x)).forEach(([k, x]) => { const q = el("p"); q.append(el("b", null, k + ": "), document.createTextNode(str(x))); q.style.marginBottom = "4px"; vis.append(q); });
+    box.append(block("Visual language", vis));
+
+    const adj = el("div", "pills"); arr(p.adjectives).forEach(x => adj.append(el("span", "pill", x)));
+    box.append(block("Descriptors", adj));
+    box.append(block("Audience", el("p", null, str(p.audience))));
+    if(str(p.notes)) box.append(Object.assign(block("Notes", el("p", null, str(p.notes))), {className:"wide"}));
+
+    const actions = el("div", "result-actions");
+    const apply = el("button", "btn primary", "Apply to brief"); apply.type = "button"; apply.onclick = applyProfile;
+    const json = el("button", "btn", "Copy JSON"); json.type = "button";
+    json.onclick = async () => { try{ await navigator.clipboard.writeText(JSON.stringify(p, null, 2)); toast("Profile JSON copied"); }catch(e){ toast("Copy failed"); } };
+    const close = el("button", "btn ghost", "Discard"); close.type = "button"; close.onclick = () => { box.hidden = true; an.profile = null; };
+    actions.append(apply, json, close);
+    box.append(actions);
+  }
+
+  function matchOption(options, value){
+    const v = str(value).toLowerCase(); if(!v) return "";
+    return options.find(o => o.toLowerCase() === v) || options.find(o => o.toLowerCase().includes(v) || v.includes(o.toLowerCase().split(" (")[0])) || "";
+  }
+
+  function applyProfile(){
+    const p = an.profile; if(!p) return;
+    selectBrand("custom");
+    const v = p.voice || {};
+    const palette = (Array.isArray(p.palette) ? p.palette : []).filter(c => validHex(c.hex));
+    const voiceParts = [str(v.summary)];
+    if(arr(v.traits).length) voiceParts.push("Traits: " + arr(v.traits).join(", ") + ".");
+    if(arr(v.doSay).length) voiceParts.push("Sounds like: " + arr(v.doSay).map(x => "“" + x + "”").join("; ") + ".");
+    if(arr(v.avoid).length) voiceParts.push("Never: " + arr(v.avoid).join("; ") + ".");
+
+    Object.assign(state, {
+      brandName: str(p.brandName), personality: str(p.personality), audience: str(p.audience),
+      essence: str(p.essence), voice: voiceParts.filter(Boolean).join(" "),
+      palette: palette.map(c => (str(c.name) || str(c.role)) + " " + c.hex.toUpperCase() + (c.role ? " (" + c.role + ")" : "")).join(", "),
+      typography: str(p.typography), imagery: str(p.imagery),
+      style: matchOption(STYLES, p.style) || str(p.style), mood: str(p.mood), motif: str(p.motif), avoid: str(p.avoid),
+      brandColor: (palette.find(c => /primary|accent/i.test(c.role || "")) || palette[0] || {}).hex || ""
+    });
+
+    const words = arr(p.adjectives);
+    const chips = [], extra = [];
+    words.forEach(w => { const m = ADJECTIVES.find(a => a.toLowerCase() === w.toLowerCase()); if(m && chips.length < MAX_ADJ && !chips.includes(m)) chips.push(m); else if(!m) extra.push(w.toLowerCase()); });
+    state.adjectives = chips; state.adjCustom = extra.join(", ");
+
+    const cam = p.camera || {};
+    if(CAM[cam.mode]){
+      state.camMode = cam.mode; state.cam = {};
+      CAM[cam.mode].fields.forEach(([key, , opts]) => {
+        const val = matchOption(opts, cam[key === "zoom" ? "shot" : key]);
+        if(val) state.cam[key] = val;
+      });
+    }
+    fillForm(); render();
+    $("#form").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+    toast("Applied. Click Save brand to keep it.");
+  }
+
+  /* ===== Motion & captions ===== */
+  var mReady = false, appTab = "image", mview = "full";
+  const MSTORE = "promptBuilder.motion.v1", APPTAB_KEY = "promptBuilder.appTab";
+  const MDEF = {type:"shot",scene:"",ref:"text",look:"",model:"Any video model",ratio:"9:16",dur:"5s",angle:"",size:"",move:"",move2:"",style:"",capText:"",emph:"",words:"Style default",pos:"Style default",case:"As written",sync:"To voiceover",delivery:"Burned into the video",font:"",colors:""};
+  const MODEL_TIPS = {
+    Seedance:"State the camera move early and describe where the shot ends.",
+    Veo:"Describe sound and ambience in one sentence if you want audio.",
+    Kling:"Put the subject and action first, then the camera.",
+    Runway:"Keep the prompt short and literal.",
+    Sora:"Write it like a film brief, with lighting and lens named.",
+    Luma:"Name the camera move in the first sentence.",
+    Hailuo:"Use plain words for the camera move and keep one action per clip."
+  };
+  const DELIVERY = {
+    "Burned into the video":"burned",
+    "Transparent overlay (alpha)":"alpha",
+    "Green screen":"green",
+    "Motion spec (keyframes)":"spec",
+    "Code (CSS/Remotion)":"code"
+  };
+  let ms = Object.assign({}, MDEF);
+  try{ Object.assign(ms, JSON.parse(localStorage.getItem(MSTORE)) || {}); }catch(e){}
+  function saveM(){ try{ localStorage.setItem(MSTORE, JSON.stringify(ms)); }catch(e){} }
+
+  const CAMLIB = window.CAMERA_LIB || null;
+  const CAPLIB = window.CAPTION_LIB && Array.isArray(window.CAPTION_LIB.styles) ? window.CAPTION_LIB : null;
+  const itemKey = it => it.id || it.title;
+  function findItem(list, key){ return key && list ? list.find(x => itemKey(x) === key) || null : null; }
+
+  function capPrev(st, play){
+    const words = st.words && st.words.length ? st.words : ["Say","*it","loud"];
+    const html = words.map((w, i) => {
+      const key = w.charAt(0) === "*", t = key ? w.slice(1) : w;
+      return '<span class="w' + (key ? ' is-key' : '') + '" style="--i:' + i + '">' + esc(t) + '</span>';
+    }).join(" ");
+    return '<div class="cap-prev cap-fx-' + esc(st.fx || "") + (play ? " play" : "") + '">' + html + '</div>';
+  }
+
+  /* Generic card-grid picker inside a collapsible */
+  function makePicker(o){
+    const d = document.createElement("details"); d.className = "pick";
+    const sum = document.createElement("summary");
+    const pl = el("span", "pl", o.label), pv = el("span", "pv", "None");
+    sum.append(pl, pv); d.append(sum);
+    const body = el("div", "pbody"); d.append(body);
+    let q = "", cat = "";
+    const tools = el("div", "ptools");
+    let search = null, chipBox = null;
+    if(o.search){
+      search = document.createElement("input"); search.type = "text"; search.placeholder = o.search; search.setAttribute("aria-label", o.search);
+      search.addEventListener("input", () => { q = search.value.trim().toLowerCase(); fill(); });
+      tools.append(search);
+    }
+    if(o.cats){
+      chipBox = el("div", "chips");
+      ["All"].concat(o.cats).forEach(c => {
+        const b = el("button", "chip", c); b.type = "button";
+        b.setAttribute("aria-pressed", c === "All");
+        b.onclick = () => { cat = c === "All" ? "" : c; chipBox.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b)); fill(); };
+        chipBox.append(b);
+      });
+      tools.append(chipBox);
+    }
+    if(tools.children.length) body.append(tools);
+    const grid = el("div", "pgrid" + (o.preview ? " wide" : "")); grid.setAttribute("role", "group"); grid.setAttribute("aria-label", o.label);
+    const big = o.preview ? el("div", "pvbig") : null;
+    const box = document.createElement("textarea"); box.className = "pbox"; box.readOnly = true; box.rows = 3; box.setAttribute("aria-label", o.label + " prompt text");
+    body.append(grid); if(big) body.append(big); body.append(box);
+
+    function fill(){
+      grid.innerHTML = "";
+      const cur = ms[o.field];
+      const list = o.items.filter(it => (!cat || it.category === cat) && (!q || (it.title + " " + (it.hint || "") + " " + (it.category || "")).toLowerCase().includes(q)));
+      if(!list.length) grid.append(el("div", "pnone", "No matches"));
+      list.forEach(it => {
+        const k = itemKey(it), b = document.createElement("button");
+        b.type = "button"; b.className = "pcard"; b.dataset.k = k;
+        b.setAttribute("aria-pressed", k === cur);
+        if(o.preview){
+          const w = el("div", "pvwrap"); w.innerHTML = capPrev(it, k === cur); b.append(w);
+          b.addEventListener("mouseenter", () => w.firstChild.classList.add("play"));
+          b.addEventListener("focus", () => w.firstChild.classList.add("play"));
+          const off = () => { if(b.getAttribute("aria-pressed") !== "true") w.firstChild.classList.remove("play"); };
+          b.addEventListener("mouseleave", off); b.addEventListener("blur", off);
+        }
+        const t = el("b", null, it.title), h = el("span", "ph", it.hint || "");
+        b.append(t, h);
+        b.onclick = () => { ms[o.field] = ms[o.field] === k ? "" : k; saveM(); sync(); mrender(); };
+        grid.append(b);
+      });
+    }
+    function sync(){
+      const cur = ms[o.field], sel = findItem(o.items, cur);
+      pv.textContent = sel ? sel.title : "None";
+      grid.querySelectorAll(".pcard").forEach(b => {
+        const on = b.dataset.k === cur;
+        b.setAttribute("aria-pressed", on);
+        const p = b.querySelector(".cap-prev"); if(p) p.classList.toggle("play", on);
+      });
+      box.hidden = !sel; box.value = sel ? sel.prompt : "";
+      if(big){ big.hidden = !sel; big.innerHTML = sel ? capPrev(sel, true) : ""; }
+    }
+    fill(); sync();
+    return {el:d, sync:sync};
+  }
+
+  const pickers = [];
+  function mount(sel, label, items, field, opts){
+    const host = $(sel);
+    if(!items){ host.append(el("div", "pnote", label + " library failed to load")); return; }
+    const p = makePicker(Object.assign({label:label, items:items, field:field}, opts || {}));
+    host.append(p.el); pickers.push(p);
+  }
+  function cats(list){ return list.map(x => x.category).filter((c, i, a) => c && a.indexOf(c) === i); }
+  if(CAMLIB){
+    $("#camSrc").href = CAMLIB.source || $("#camSrc").href;
+    mount("#pkAngle", "Angle", CAMLIB.angles, "angle");
+    mount("#pkSize", "Shot size", CAMLIB.sizes, "size");
+    mount("#pkMove", "Movement", CAMLIB.moves, "move", {search:"Search movements", cats:cats(CAMLIB.moves)});
+    mount("#pkMove2", "Then move (optional)", CAMLIB.moves, "move2", {search:"Search second movement", cats:cats(CAMLIB.moves)});
+  }else{
+    $("#pkAngle").append(el("div", "pnote", "Camera library failed to load"));
+  }
+  if(CAPLIB) mount("#pkCap", "Caption style", CAPLIB.styles, "style", {search:"Search caption styles", cats:cats(CAPLIB.styles), preview:true});
+  else $("#pkCap").append(el("div", "pnote", "Caption library failed to load"));
+
+  /* Bind plain fields */
+  document.querySelectorAll("[data-m]").forEach(f => {
+    f.value = ms[f.dataset.m] ?? "";
+    if(f.tagName === "SELECT" && f.value !== ms[f.dataset.m]) f.value = MDEF[f.dataset.m];
+    f.addEventListener("input", () => { ms[f.dataset.m] = f.value; saveM(); mrender(); });
+  });
+  document.querySelectorAll("[data-mseg]").forEach(g => {
+    const k = g.dataset.mseg;
+    const paint = () => g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === ms[k]));
+    g.querySelectorAll("button").forEach(b => b.onclick = () => { ms[k] = b.dataset.v; paint(); saveM(); mrender(); });
+    paint();
+  });
+  document.querySelectorAll("#mTabs .tab").forEach(t => t.onclick = () => {
+    mview = t.dataset.view;
+    document.querySelectorAll("#mTabs .tab").forEach(x => x.setAttribute("aria-selected", x === t)); mrender();
+  });
+  $("#mcopy").onclick = copy;
+
+  function derivedLook(){ return [state.style, state.mood, state.palette].map(x => (x || "").trim()).filter(Boolean).join(", "); }
+  function firstHex(s){ const m = (s || "").match(/#[0-9a-f]{6}\b|#[0-9a-f]{3}\b/i); return m ? m[0] : ""; }
+
+  function mbuild(){
+    const m = ms, b = state || {}, out = [];
+    const H = t => out.push([t, "h"]);
+    const T = t => out.push([t, ""]);
+    const V = (val, ph) => out.push(val && String(val).trim() ? [String(val).trim(), "v"] : ["[" + ph + "]", "e"]);
+    const L = (label, val) => { if(val && String(val).trim()){ T(label + ": "); V(val, ""); T("\n"); } };
+    const shot = m.type !== "caption", cap = m.type !== "shot";
+    const ang = findItem(CAMLIB && CAMLIB.angles, m.angle), siz = findItem(CAMLIB && CAMLIB.sizes, m.size);
+    const mv = findItem(CAMLIB && CAMLIB.moves, m.move), mv2 = findItem(CAMLIB && CAMLIB.moves, m.move2);
+    const sty = findItem(CAPLIB && CAPLIB.styles, m.style);
+    const look = (m.look || "").trim() || derivedLook();
+    const font = (m.font || "").trim() || (b.typography || "").trim();
+    const colors = (m.colors || "").trim() || (b.palette || "").trim();
+    const mode = DELIVERY[m.delivery] || "burned";
+    const role = m.type === "shot" ? "a video director" : m.type === "caption" ? "a motion designer" : "a video director and motion designer";
+    const lines = (m.capText || "").split("\n").map(x => x.trim()).filter(Boolean);
+    const camParts = [];
+    if(ang) camParts.push(["Angle", ang.prompt]);
+    if(siz) camParts.push(["Shot size", siz.prompt]);
+    if(mv) camParts.push(["Movement", mv.prompt]);
+    if(mv2) camParts.push(["Then", mv2.prompt]);
+    const safe = m.ratio === "9:16" ? "Keep captions out of the top 12% and bottom 20% of the 9:16 frame, where platform interface sits." : "Keep captions inside the central 90% of the frame.";
+    const DELIV = {
+      burned:"Captions are burned into the video. Keep every caption inside the safe zone. " + safe,
+      alpha:"Render captions only on a transparent background. Export ProRes 4444 or WebM with alpha.",
+      green:"Render captions on a pure #00FF00 background. No spill, and no shadows touching the edge.",
+      spec:"Do not render video. Return a keyframe table per word: time ms, property, from, to, easing.",
+      code:"Return a self-contained Remotion component or CSS keyframes that reproduce this exactly."
+    };
+    const brandOn = b.brandName || b.personality || b.mood || b.palette || b.typography || b.avoid;
+
+    if(mview === "compact"){
+      T("Act as " + role + ". ");
+      if(b.brandName){ T("Brand: "); V(b.brandName, ""); if(b.personality){ T(" ("); V(b.personality, ""); T(")"); } T(". "); }
+      if(b.mood){ T("Mood: "); V(b.mood, ""); T(". "); }
+      if(b.palette){ T("Palette: "); V(b.palette, ""); T(". "); }
+      if(shot){
+        T("Shot: "); V(m.scene, "scene and subject"); T(". ");
+        if(m.ref === "image") T("Use the attached image as the first frame and animate it. ");
+        T("Look: "); V(look, "look"); T(". ");
+        if(camParts.length){ T("Camera: "); V(camParts.map(c => c[0] === "Then" ? "then " + c[1] : c[1]).join(" "), ""); T(" "); }
+        T("Format: "); V(m.ratio, ""); T(", "); V(m.dur, "");
+        if(m.model !== "Any video model"){ T(", for "); V(m.model, ""); }
+        T(". One continuous shot, no cuts, subject stays consistent. ");
+        if(!cap) T("No on-screen text, logos or watermarks. ");
+      }
+      if(cap){
+        T("Captions: ");
+        if(sty){ V(sty.prompt, ""); T(" "); }
+        if(sty && sty.spec){ T("Enter: "); V(sty.spec.enter, ""); T(". Emphasis: "); V(sty.spec.emphasis, ""); T(". Exit: "); V(sty.spec.exit, ""); T(". "); }
+        T("Text: "); V(lines.join(" / "), "caption text"); T(". ");
+        if(m.emph.trim()){ T("Emphasize "); V(m.emph, ""); T(". "); }
+        if(m.words !== "Style default"){ V(m.words === "Full line" ? "the full line" : m.words + " words", ""); T(" at a time, "); }
+        if(m.pos !== "Style default"){ V(m.pos.toLowerCase(), ""); T(", "); }
+        T("case: "); V(m.case, ""); T(", synced "); V(m.sync.toLowerCase(), ""); T(". ");
+        if(font){ T("Font: "); V(font, ""); T(". "); }
+        if(colors){ T("Colors: "); V(colors, ""); T(". "); }
+        V(DELIV[mode], ""); T(" ");
+      }
+      if(b.avoid){ T("Avoid: "); V(b.avoid, ""); T("."); }
+      return out;
+    }
+
+    H("ROLE\n");
+    T("You are " + role + (m.type === "shot" ? " writing one shot for an AI video model.\n\n" : m.type === "caption" ? " designing animated captions for a brand.\n\n" : " building a shot with animated captions.\n\n"));
+    if(brandOn){
+      H("BRAND\n");
+      L("Brand", b.brandName); L("Personality", b.personality); L("Mood", b.mood);
+      L("Palette", b.palette); L("Typography", b.typography); L("Avoid", b.avoid);
+      T("\n");
+    }
+    if(shot){
+      H("SHOT\n");
+      T("Scene: "); V(m.scene, "scene and subject"); T("\n");
+      T("Reference: " + (m.ref === "image" ? "animate the attached image. Use it as the first frame and keep its subject, composition and colors." : "text to video, no reference image.") + "\n");
+      T("Look: "); V(look, "look"); T("\n");
+      T("Aspect ratio: "); V(m.ratio, ""); T("\n");
+      T("Duration: "); V(m.dur, ""); T("\n");
+      if(m.model !== "Any video model"){ T("Target model: "); V(m.model, ""); T(MODEL_TIPS[m.model] ? ". " + MODEL_TIPS[m.model] + "\n" : "\n"); }
+      T("\n");
+      if(camParts.length){
+        H("CAMERA\n");
+        camParts.forEach(([l, p]) => { T(l + ": "); V(p, ""); T("\n"); });
+        T("\n");
+      }
+    }
+    if(cap){
+      H("CAPTIONS\n");
+      if(sty){ T("Style: "); V(sty.prompt, ""); T("\n"); }
+      if(sty && sty.spec){
+        const sp = sty.spec;
+        [["Enter", sp.enter], ["Emphasis", sp.emphasis], ["Exit", sp.exit], ["Timing", sp.timing], ["Easing", sp.easing]].forEach(([l, v]) => { if(v) { T(l + ": "); V(v, ""); T("\n"); } });
+      }
+      T("Caption text, one line per beat:\n");
+      if(lines.length) lines.forEach((l, i) => { T((i + 1) + ". "); V(l, ""); T("\n"); });
+      else { V("", "caption text"); T("\n"); }
+      if(m.emph.trim()){ T("Emphasis words: "); V(m.emph, ""); T("\n"); }
+      if(m.words !== "Style default"){ T("Words on screen: "); V(m.words === "Full line" ? "the full line" : m.words + " words at a time", ""); T("\n"); }
+      if(m.pos !== "Style default"){ T("Position: "); V(m.pos.toLowerCase(), ""); T("\n"); }
+      if(sty && (m.words !== "Style default" || m.pos !== "Style default")) T("Where these settings differ from the style, follow these settings.\n");
+      T("Case: "); V(m.case, ""); T("\n");
+      L("Font", font); L("Colors", colors);
+      T("Sync: "); V(m.sync.toLowerCase(), ""); T("\n\n");
+      H("DELIVERY\n");
+      V(DELIV[mode], ""); T("\n");
+      if(shot && mode !== "burned") T("The shot above is the background plate. Deliver the caption layer separately.\n");
+      T("\n");
+    }
+    if(shot){
+      H("RULES\n");
+      T("- One continuous shot, no cuts\n- Keep the subject identical from first frame to last: face, clothing, product shape, colors\n");
+      T(cap ? "- Captions are the only on-screen text. No logos or watermarks\n" : "- No on-screen text, logos or watermarks\n");
+      T("\n");
+      H("DELIVER\n");
+      T("One "); V(m.dur, ""); T(" clip at "); V(m.ratio, ""); T(".\n");
+    }
+    return out;
+  }
+  function mplain(){ return mbuild().map(x => x[0]).join("").trim(); }
+
+  function mrender(){
+    if(!mReady) return;
+    document.querySelectorAll("#mform fieldset[data-types]").forEach(f => { f.hidden = f.dataset.types.split(" ").indexOf(ms.type) < 0; });
+    const lookEl = $("#m_look"); lookEl.placeholder = derivedLook() || "Uses the brand style, mood and palette";
+    $("#m_font").placeholder = (state.typography || "").trim() || "Brand typography";
+    $("#m_colors").placeholder = (state.palette || "").trim() || "Brand palette";
+    const cp = $("#mCapPick");
+    cp.style.setProperty("--cap-accent", firstHex(ms.colors) || firstHex(state.palette) || "#facc15");
+    if((ms.font || "").trim()) cp.style.setProperty("--cap-font", ms.font.trim()); else cp.style.removeProperty("--cap-font");
+    const segs = mbuild();
+    $("#mout").innerHTML = segs.map(([t, k]) => k ? '<span class="' + k + '">' + esc(t) + '</span>' : esc(t)).join("");
+    const words = mplain().split(/\s+/).filter(Boolean).length;
+    const empty = segs.filter(x => x[1] === "e").length;
+    $("#mcount").textContent = words + " words" + (empty ? " · " + empty + " empty" : "");
+  }
+
+  /* App tabs */
+  function setAppTab(t, focus){
+    appTab = t;
+    document.querySelectorAll("#appTabs .apptab").forEach(b => {
+      const on = b.dataset.app === t;
+      b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
+      if(on && focus) b.focus();
+    });
+    $("#panel-image").hidden = t !== "image"; $("#panel-motion").hidden = t !== "motion";
+    try{ localStorage.setItem(APPTAB_KEY, t); }catch(e){}
+    if(t === "motion") mrender();
+  }
+  (function(){
+    const tabs = [...document.querySelectorAll("#appTabs .apptab")];
+    tabs.forEach((b, i) => {
+      b.onclick = () => setAppTab(b.dataset.app);
+      b.addEventListener("keydown", e => {
+        let n = -1;
+        if(e.key === "ArrowRight") n = (i + 1) % tabs.length;
+        else if(e.key === "ArrowLeft") n = (i + tabs.length - 1) % tabs.length;
+        else if(e.key === "Home") n = 0; else if(e.key === "End") n = tabs.length - 1;
+        if(n < 0) return;
+        e.preventDefault(); setAppTab(tabs[n].dataset.app, true);
+      });
+    });
+  })();
+
+  buildStyleChips(); buildAdj(); buildZones(); renderBrands(); selectBrand(current);
+  mReady = true;
+  let savedTab = "image"; try{ savedTab = localStorage.getItem(APPTAB_KEY) === "motion" ? "motion" : "image"; }catch(e){}
+  setAppTab(savedTab); mrender();
+  loadConfig();
+})();
+</script>
+</body>
+</html>

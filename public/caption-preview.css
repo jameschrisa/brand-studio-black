@@ -1,0 +1,228 @@
+/* Caption animation previews. Scoped to .cap-prev. Animations run only with .play. */
+.cap-prev{--a:var(--cap-accent,#facc15);--b:var(--cap-base,#fff);--dur:2.4s;position:relative;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.1em .32em;width:100%;height:120px;padding:10px 14px;overflow:hidden;border-radius:8px;background:#111;color:var(--b);font-family:var(--cap-font,"Geist",system-ui,sans-serif);font-weight:700;font-size:20px;line-height:1.15;text-align:center}
+.cap-prev .w{display:inline-block;position:relative;z-index:0;white-space:nowrap}
+.cap-prev .w.is-key{color:var(--a)}
+
+/* ---------- Word-by-word ---------- */
+.cap-prev.play.cap-fx-karaoke .w{animation:cap-k-karaoke var(--dur) ease-out calc(var(--i,0)*420ms) infinite both}
+@keyframes cap-k-karaoke{0%{color:var(--b);opacity:.45;transform:scale(1)}5%{color:var(--a);opacity:1;transform:scale(1.1)}10%{color:var(--a);opacity:1;transform:scale(1)}90%{color:var(--a);opacity:1}97%,100%{color:var(--b);opacity:.45}}
+
+.cap-prev.play.cap-fx-wordpop .w{animation:cap-k-wordpop var(--dur) ease-out calc(var(--i,0)*140ms) infinite both}
+@keyframes cap-k-wordpop{0%{opacity:0;transform:scale(0)}7%{opacity:1;transform:scale(1.15)}12%{transform:scale(1)}88%{opacity:1;transform:scale(1)}95%,100%{opacity:0;transform:scale(.9)}}
+
+.cap-prev.play.cap-fx-punch .w{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.9em;animation:cap-k-punch var(--dur) ease-out calc(var(--i,0)*620ms) infinite both}
+@keyframes cap-k-punch{0%{opacity:0;transform:scale(1.7)}3%{opacity:1;transform:scale(.95)}6%{transform:scale(1)}22%{opacity:1;transform:scale(1.04)}24%,100%{opacity:0;transform:scale(1.04)}}
+
+.cap-fx-wordbox .w.is-key{color:#111}
+.cap-fx-wordbox .w.is-key::before{content:"";position:absolute;inset:-.1em -.32em;background:var(--a);border-radius:.3em;z-index:-1}
+.cap-prev.play.cap-fx-wordbox .w{animation:cap-k-wb-text var(--dur) linear calc(var(--i,0)*520ms) infinite both}
+.cap-prev.play.cap-fx-wordbox .w::before{content:"";position:absolute;inset:-.1em -.32em;background:var(--a);border-radius:.3em;z-index:-1;animation:cap-k-wb-box var(--dur) cubic-bezier(.2,.9,.3,1) calc(var(--i,0)*520ms) infinite both}
+@keyframes cap-k-wb-text{0%{color:var(--b)}3%,20%{color:#111}24%,100%{color:var(--b)}}
+@keyframes cap-k-wb-box{0%{opacity:0;transform:translateX(-14px) scale(.9)}3%{opacity:1;transform:none}20%{opacity:1}24%,100%{opacity:0}}
+
+.cap-prev.play.cap-fx-sweep .w{color:transparent;background:linear-gradient(90deg,var(--a) 50%,var(--b) 50%) 100% 0/200% 100%;-webkit-background-clip:text;background-clip:text;animation:cap-k-sweep var(--dur) cubic-bezier(.5,0,.2,1) calc(var(--i,0)*320ms) infinite both}
+@keyframes cap-k-sweep{0%{background-position:100% 0}28%,92%{background-position:0 0}100%{background-position:100% 0}}
+
+.cap-fx-swap .w:not(.is-key){opacity:.6}
+.cap-prev.play.cap-fx-swap .w{animation:cap-k-swap-dim var(--dur) ease-out calc(var(--i,0)*100ms) infinite both}
+.cap-prev.play.cap-fx-swap .w.is-key{animation:cap-k-swap-key var(--dur) ease-in-out calc(var(--i,0)*100ms) infinite both}
+@keyframes cap-k-swap-dim{0%{opacity:0;transform:translateY(8px)}12%,88%{opacity:.6;transform:none}96%,100%{opacity:0}}
+@keyframes cap-k-swap-key{0%{opacity:0;color:var(--b);transform:perspective(300px) rotateX(90deg)}10%,40%{opacity:1;color:var(--b);transform:perspective(300px) rotateX(0)}46%{opacity:0;color:var(--b);transform:perspective(300px) rotateX(-90deg)}47%{color:var(--a);transform:perspective(300px) rotateX(90deg)}56%{opacity:1;color:var(--a);transform:perspective(300px) rotateX(0) scale(1.2)}90%{opacity:1;color:var(--a);transform:scale(1.2)}97%,100%{opacity:0;transform:scale(1.2)}}
+
+/* ---------- Pop & bounce ---------- */
+.cap-prev.play.cap-fx-bounce .w{animation:cap-k-bounce var(--dur) ease-out calc(var(--i,0)*120ms) infinite both}
+@keyframes cap-k-bounce{0%{opacity:0;transform:translateY(34px) scale(.5)}8%{opacity:1;transform:translateY(-14px) scale(1.1)}14%{transform:translateY(5px) scale(.98)}19%,88%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(-6px)}}
+
+.cap-prev.play.cap-fx-squash .w{transform-origin:50% 100%;animation:cap-k-squash var(--dur) ease-out calc(var(--i,0)*130ms) infinite both}
+@keyframes cap-k-squash{0%{opacity:0;transform:translateY(-44px) scale(.65,1.5)}9%{opacity:1;transform:translateY(0) scale(1.35,.65)}15%{transform:scale(.9,1.14)}21%{transform:scale(1.05,.95)}27%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
+
+.cap-prev.play.cap-fx-shake .w{animation:cap-k-shake var(--dur) ease-out calc(var(--i,0)*150ms) infinite both}
+@keyframes cap-k-shake{0%{opacity:0;transform:scale(2.4)}6%{opacity:1;transform:scale(.9)}9%{transform:translate(-4px,2px) rotate(-2deg) scale(1.05)}12%{transform:translate(4px,-2px) rotate(2deg) scale(1.05)}15%{transform:translate(-2px,1px) rotate(-1deg)}18%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
+
+.cap-prev.play.cap-fx-riseblur .w{animation:cap-k-riseblur var(--dur) cubic-bezier(.2,.8,.2,1) calc(var(--i,0)*95ms) infinite both}
+@keyframes cap-k-riseblur{0%{opacity:0;filter:blur(9px);transform:translateY(20px)}16%,86%{opacity:1;filter:blur(0);transform:none}96%,100%{opacity:0;filter:blur(6px);transform:translateY(-8px)}}
+
+.cap-prev.play.cap-fx-drop .w{animation:cap-k-drop var(--dur) ease-in calc(var(--i,0)*130ms) infinite both}
+@keyframes cap-k-drop{0%{opacity:0;transform:translateY(-70px)}9%{opacity:1;transform:translateY(0);animation-timing-function:ease-out}13%{transform:translateY(-7px);animation-timing-function:ease-in}17%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
+
+.cap-prev.play.cap-fx-wiggle .w{animation:cap-k-wiggle var(--dur) ease-in-out calc(var(--i,0)*160ms) infinite both}
+@keyframes cap-k-wiggle{0%{opacity:0;transform:scale(.7)}8%{opacity:1;transform:scale(1.05)}14%{transform:rotate(0)}26%{transform:rotate(-3.5deg) translateY(-2px)}38%{transform:rotate(3.5deg)}50%{transform:rotate(-3.5deg) translateY(-2px)}62%{transform:rotate(3.5deg)}74%,90%{opacity:1;transform:rotate(0)}97%,100%{opacity:0}}
+
+/* ---------- Reveal ---------- */
+.cap-prev.play.cap-fx-maskup .w{animation:cap-k-maskup var(--dur) cubic-bezier(.2,.9,.2,1) calc(var(--i,0)*130ms) infinite both}
+@keyframes cap-k-maskup{0%{clip-path:inset(100% 0 0 0);transform:translateY(45%)}18%,86%{clip-path:inset(0);transform:none}98%,100%{clip-path:inset(0 0 100% 0);transform:translateY(-45%)}}
+
+.cap-prev.play.cap-fx-type .w{animation:cap-k-type var(--dur) steps(7,end) calc(var(--i,0)*520ms) infinite both}
+.cap-prev.play.cap-fx-type .w::after{content:"";position:absolute;right:-.12em;top:.08em;width:2px;height:1em;background:var(--a);animation:cap-k-cursor var(--dur) steps(1,end) calc(var(--i,0)*520ms) infinite both}
+@keyframes cap-k-type{0%{clip-path:inset(-4px 100% -4px 0)}18%,92%{clip-path:inset(-4px -8px -4px 0)}98%,100%{clip-path:inset(-4px 100% -4px 0)}}
+@keyframes cap-k-cursor{0%,17%{opacity:1}18%,30%{opacity:0}31%,100%{opacity:0}}
+.cap-prev.play.cap-fx-type .w:last-child::after{animation:cap-k-cursor-last var(--dur) steps(1,end) calc(var(--i,0)*520ms) infinite both}
+@keyframes cap-k-cursor-last{0%{opacity:1}30%{opacity:0}45%{opacity:1}60%{opacity:0}75%{opacity:1}90%,100%{opacity:0}}
+
+.cap-prev.play.cap-fx-blurfocus .w{animation:cap-k-blurfocus var(--dur) ease-out calc(var(--i,0)*140ms) infinite both}
+@keyframes cap-k-blurfocus{0%{opacity:0;filter:blur(14px);transform:scale(1.2)}22%,86%{opacity:1;filter:blur(0);transform:none}96%,100%{opacity:0;filter:blur(10px)}}
+
+.cap-prev.play.cap-fx-slide .w:nth-child(odd){animation:cap-k-slide-l var(--dur) cubic-bezier(.2,.9,.2,1) calc(var(--i,0)*150ms) infinite both}
+.cap-prev.play.cap-fx-slide .w:nth-child(even){animation:cap-k-slide-r var(--dur) cubic-bezier(.2,.9,.2,1) calc(var(--i,0)*150ms) infinite both}
+@keyframes cap-k-slide-l{0%{opacity:0;transform:translateX(-60px)}16%,86%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateX(30px)}}
+@keyframes cap-k-slide-r{0%{opacity:0;transform:translateX(60px)}16%,86%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateX(-30px)}}
+
+.cap-fx-scatter .w:nth-child(1){--x:-34px;--y:-22px;--r:-24deg}
+.cap-fx-scatter .w:nth-child(2){--x:28px;--y:-30px;--r:20deg}
+.cap-fx-scatter .w:nth-child(3){--x:-22px;--y:30px;--r:16deg}
+.cap-fx-scatter .w:nth-child(4){--x:34px;--y:24px;--r:-18deg}
+.cap-fx-scatter .w:nth-child(5){--x:0px;--y:-36px;--r:12deg}
+.cap-prev.play.cap-fx-scatter .w{animation:cap-k-scatter var(--dur) cubic-bezier(.2,.9,.25,1) calc(var(--i,0)*80ms) infinite both}
+@keyframes cap-k-scatter{0%{opacity:0;filter:blur(4px);transform:translate(var(--x,20px),var(--y,-20px)) rotate(var(--r,15deg)) scale(.6)}22%,86%{opacity:1;filter:blur(0);transform:none}96%,100%{opacity:0;filter:blur(4px);transform:translate(var(--x,20px),var(--y,-20px)) rotate(var(--r,15deg)) scale(.6)}}
+
+.cap-prev.play.cap-fx-linerise .w{animation:cap-k-linerise var(--dur) cubic-bezier(.16,1,.3,1) calc(var(--i,0)*70ms) infinite both}
+@keyframes cap-k-linerise{0%{opacity:0;transform:translateY(44px)}18%,88%{opacity:1;transform:none}98%,100%{opacity:0;transform:translateY(-26px)}}
+
+.cap-prev.play.cap-fx-scramble .w{animation:cap-k-scramble var(--dur) steps(1,end) calc(var(--i,0)*200ms) infinite both}
+@keyframes cap-k-scramble{0%{opacity:0;letter-spacing:.5em;transform:skewX(20deg)}3%{opacity:1;letter-spacing:-.06em;transform:skewX(-18deg)}6%{letter-spacing:.3em;transform:skewX(12deg);color:var(--a)}9%{letter-spacing:-.03em;transform:skewX(-8deg);color:var(--b)}12%{letter-spacing:.14em;transform:skewX(5deg);color:var(--a)}15%{letter-spacing:.04em;transform:skewX(-2deg);color:var(--b)}18%,90%{opacity:1;letter-spacing:0;transform:none}95%,100%{opacity:0}}
+.cap-prev.play.cap-fx-scramble .w.is-key{animation-name:cap-k-scramble-key}
+@keyframes cap-k-scramble-key{0%{opacity:0;letter-spacing:.5em;transform:skewX(20deg)}3%{opacity:1;letter-spacing:-.06em;transform:skewX(-18deg)}6%{letter-spacing:.3em;transform:skewX(12deg);color:var(--b)}9%{letter-spacing:-.03em;transform:skewX(-8deg);color:var(--a)}12%{letter-spacing:.14em;transform:skewX(5deg);color:var(--b)}15%{letter-spacing:.04em;transform:skewX(-2deg);color:var(--a)}18%,90%{opacity:1;letter-spacing:0;transform:none;color:var(--a)}95%,100%{opacity:0}}
+
+.cap-prev.play.cap-fx-barwipe .w{animation:cap-k-barwipe-w var(--dur) linear calc(var(--i,0)*220ms) infinite both}
+.cap-prev.play.cap-fx-barwipe .w::after{content:"";position:absolute;inset:0 -.1em;background:var(--a);z-index:1;transform:scaleX(0);transform-origin:left;animation:cap-k-barwipe-bar var(--dur) cubic-bezier(.7,0,.2,1) calc(var(--i,0)*220ms) infinite both}
+@keyframes cap-k-barwipe-w{0%,11%{opacity:0}12%,90%{opacity:1}96%,100%{opacity:0}}
+@keyframes cap-k-barwipe-bar{0%{transform:scaleX(0);transform-origin:left}12%{transform:scaleX(1);transform-origin:left}12.01%{transform:scaleX(1);transform-origin:right}26%,100%{transform:scaleX(0);transform-origin:right}}
+
+/* ---------- Kinetic ---------- */
+.cap-fx-slam{flex-direction:column;flex-wrap:nowrap;gap:0;line-height:.95}
+.cap-fx-slam .w:nth-child(1){font-size:.9em}
+.cap-fx-slam .w:nth-child(2){font-size:1.8em;font-weight:900}
+.cap-fx-slam .w:nth-child(3){font-size:1.1em}
+.cap-prev.play.cap-fx-slam .w{animation:cap-k-slam var(--dur) cubic-bezier(.2,.9,.3,1) calc(var(--i,0)*170ms) infinite both}
+@keyframes cap-k-slam{0%{opacity:0;transform:scale(3.2)}6%{opacity:1;transform:scale(.93)}9%{transform:scale(1.04)}12%,88%{opacity:1;transform:none}96%,100%{opacity:0;transform:scale(.9)}}
+
+.cap-prev.play.cap-fx-flip .w{transform-origin:50% 100%;animation:cap-k-flip var(--dur) ease-out calc(var(--i,0)*130ms) infinite both}
+@keyframes cap-k-flip{0%{opacity:0;transform:perspective(400px) rotateX(-95deg)}12%{opacity:1;transform:perspective(400px) rotateX(14deg)}18%,86%{opacity:1;transform:perspective(400px) rotateX(0)}96%,100%{opacity:0;transform:perspective(400px) rotateX(90deg)}}
+
+.cap-prev.play.cap-fx-spin .w{animation:cap-k-spin var(--dur) ease-out calc(var(--i,0)*140ms) infinite both}
+@keyframes cap-k-spin{0%{opacity:0;transform:rotate(-270deg) scale(0)}14%{opacity:1;transform:rotate(12deg) scale(1.12)}20%,86%{opacity:1;transform:none}96%,100%{opacity:0;transform:rotate(90deg) scale(0)}}
+
+.cap-prev.play.cap-fx-wave .w{animation:cap-k-wave var(--dur) ease-in-out calc(var(--i,0)*150ms) infinite both}
+@keyframes cap-k-wave{0%{transform:translateY(0)}12.5%{transform:translateY(-10px)}25%{transform:translateY(0)}37.5%{transform:translateY(-10px)}50%{transform:translateY(0)}100%{transform:translateY(0)}}
+
+.cap-prev.play.cap-fx-zoomthru .w{animation:cap-k-zoomthru var(--dur) cubic-bezier(.3,.7,.3,1) calc(var(--i,0)*100ms) infinite both}
+@keyframes cap-k-zoomthru{0%{opacity:0;filter:blur(6px);transform:scale(.25)}14%{opacity:1;filter:blur(0);transform:scale(1)}68%{opacity:1;transform:scale(1.12)}82%{opacity:0;filter:blur(8px);transform:scale(5)}100%{opacity:0;transform:scale(5)}}
+
+.cap-prev.play.cap-fx-glitch .w{animation:cap-k-glitch var(--dur) steps(1,end) calc(var(--i,0)*60ms) infinite both}
+@keyframes cap-k-glitch{0%{text-shadow:-4px 0 #f0f,4px 0 #0ff;transform:translate(3px,-1px);clip-path:inset(0)}3%{text-shadow:4px 0 #f0f,-4px 0 #0ff;transform:translate(-3px,1px);clip-path:inset(20% 0 45% 0)}6%{text-shadow:-3px 0 #f0f,3px 0 #0ff;transform:translate(2px,0);clip-path:inset(0)}9%{text-shadow:5px 0 #f0f,-5px 0 #0ff;transform:translate(-4px,2px);clip-path:inset(55% 0 10% 0)}12%{text-shadow:2px 0 #f0f,-2px 0 #0ff;transform:none;clip-path:inset(0)}45%{text-shadow:2px 0 #f0f,-2px 0 #0ff}50%{text-shadow:-5px 0 #f0f,5px 0 #0ff;transform:translate(4px,-1px);clip-path:inset(30% 0 30% 0)}54%{text-shadow:3px 0 #f0f,-3px 0 #0ff;transform:translate(-2px,1px);clip-path:inset(0)}58%,100%{text-shadow:2px 0 #f0f,-2px 0 #0ff;transform:none;clip-path:inset(0)}}
+
+.cap-prev.play.cap-fx-pulse .w{animation:cap-k-pulse var(--dur) ease-out infinite both}
+@keyframes cap-k-pulse{0%,25%,50%,75%{transform:scale(1.15);filter:brightness(1.3)}10%,35%,60%,85%{transform:scale(1);filter:brightness(1)}100%{transform:scale(1.15);filter:brightness(1.3)}}
+
+/* ---------- Highlight & box ---------- */
+.cap-fx-marker .w.is-key{color:#111}
+.cap-fx-marker .w.is-key::before{content:"";position:absolute;left:-.2em;right:-.2em;top:.18em;bottom:-.02em;background:var(--a);border-radius:.15em;transform:rotate(-1.5deg);z-index:-1}
+.cap-prev.play.cap-fx-marker .w{animation:cap-k-fadeup var(--dur) ease-out calc(var(--i,0)*100ms) infinite both}
+.cap-prev.play.cap-fx-marker .w.is-key::before{transform-origin:left;animation:cap-k-marker var(--dur) cubic-bezier(.6,0,.2,1) calc(var(--i,0)*100ms) infinite both}
+.cap-prev.play.cap-fx-marker .w.is-key{animation:cap-k-marker-text var(--dur) linear calc(var(--i,0)*100ms) infinite both}
+@keyframes cap-k-fadeup{0%{opacity:0;transform:translateY(8px)}12%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes cap-k-marker{0%,14%{transform:rotate(-1.5deg) scaleX(0)}34%,88%{transform:rotate(-1.5deg) scaleX(1)}96%,100%{transform:rotate(-1.5deg) scaleX(1);opacity:0}}
+@keyframes cap-k-marker-text{0%{opacity:0;color:var(--b)}12%,22%{opacity:1;color:var(--b)}34%,88%{opacity:1;color:#111}96%,100%{opacity:0;color:#111}}
+
+.cap-fx-sticker .w.is-key{background:var(--a);color:#111;padding:.05em .4em;border-radius:.3em;transform:rotate(-4deg);box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.cap-prev.play.cap-fx-sticker .w{animation:cap-k-fadeup var(--dur) ease-out calc(var(--i,0)*100ms) infinite both}
+.cap-prev.play.cap-fx-sticker .w.is-key{animation:cap-k-sticker var(--dur) ease-out calc(var(--i,0)*140ms) infinite both}
+@keyframes cap-k-sticker{0%{opacity:0;transform:scale(0) rotate(-24deg)}10%{opacity:1;transform:scale(1.25) rotate(-1deg)}16%{transform:scale(.96) rotate(-5deg)}20%,88%{opacity:1;transform:scale(1) rotate(-4deg)}96%,100%{opacity:0;transform:scale(0) rotate(-4deg)}}
+
+.cap-fx-underline .w.is-key::after{content:"";position:absolute;left:0;right:0;bottom:-.12em;height:3px;border-radius:2px;background:var(--a)}
+.cap-fx-underline .w.is-key{color:var(--b)}
+.cap-prev.play.cap-fx-underline .w{animation:cap-k-fadeup var(--dur) ease-out calc(var(--i,0)*100ms) infinite both}
+.cap-prev.play.cap-fx-underline .w.is-key::after{transform-origin:left;animation:cap-k-underline var(--dur) cubic-bezier(.6,0,.2,1) calc(var(--i,0)*100ms) infinite both}
+@keyframes cap-k-underline{0%,16%{transform:scaleX(0)}38%,88%{transform:scaleX(1)}96%,100%{transform:scaleX(1);opacity:0}}
+
+.cap-fx-strike .w:not(.is-key){opacity:.55}
+.cap-fx-strike .w:not(.is-key)::after{content:"";position:absolute;left:-.08em;right:-.08em;top:54%;height:3px;border-radius:2px;background:var(--a)}
+.cap-prev.play.cap-fx-strike .w:not(.is-key){animation:cap-k-strike-old var(--dur) ease-out infinite both}
+.cap-prev.play.cap-fx-strike .w:not(.is-key)::after{transform-origin:left;animation:cap-k-strike-line var(--dur) cubic-bezier(.6,0,.2,1) infinite both}
+.cap-prev.play.cap-fx-strike .w.is-key{animation:cap-k-strike-new var(--dur) ease-out infinite both}
+@keyframes cap-k-strike-old{0%{opacity:0}6%,26%{opacity:1}34%,88%{opacity:.55}96%,100%{opacity:0}}
+@keyframes cap-k-strike-line{0%,16%{transform:scaleX(0)}28%,100%{transform:scaleX(1)}}
+@keyframes cap-k-strike-new{0%,30%{opacity:0;transform:scale(.6)}38%{opacity:1;transform:scale(1.22)}44%,88%{opacity:1;transform:scale(1.1)}96%,100%{opacity:0;transform:scale(1.1)}}
+
+.cap-fx-emoji .w.is-key::after{content:"\1F525";display:inline-block;margin-left:.15em}
+.cap-prev.play.cap-fx-emoji .w{animation:cap-k-fadeup var(--dur) ease-out calc(var(--i,0)*120ms) infinite both}
+.cap-prev.play.cap-fx-emoji .w.is-key::after{animation:cap-k-emoji var(--dur) ease-out calc(var(--i,0)*120ms) infinite both}
+@keyframes cap-k-emoji{0%,14%{opacity:0;transform:scale(0) rotate(-30deg)}24%{opacity:1;transform:scale(1.6) rotate(10deg)}32%{transform:scale(1) rotate(-6deg)}40%{transform:scale(1.12) rotate(4deg)}48%,88%{opacity:1;transform:scale(1) rotate(0)}96%,100%{opacity:0;transform:scale(0)}}
+
+.cap-fx-bubble{padding-top:30px}
+.cap-fx-bubble::before{content:"Replying to @maya";position:absolute;top:9px;left:50%;transform:translateX(-50%);padding:2px 9px;border-radius:99px;background:rgba(255,255,255,.16);color:var(--b);font-size:9px;font-weight:600;white-space:nowrap}
+.cap-fx-bubble .w{background:#fff;color:#111;padding:.1em .5em;border-radius:1em 1em 1em .2em}
+.cap-fx-bubble .w.is-key{color:#111;background:var(--a)}
+.cap-prev.play.cap-fx-bubble::before{animation:cap-k-bubble-tag var(--dur) ease-out infinite both}
+.cap-prev.play.cap-fx-bubble .w{transform-origin:0 100%;animation:cap-k-bubble var(--dur) cubic-bezier(.3,1.4,.5,1) calc(var(--i,0)*160ms) infinite both}
+@keyframes cap-k-bubble-tag{0%{opacity:0;top:-4px}10%,88%{opacity:1;top:9px}96%,100%{opacity:0;top:9px}}
+@keyframes cap-k-bubble{0%,4%{opacity:0;transform:scale(.2) translateY(12px)}14%{opacity:1;transform:scale(1.07)}20%,88%{opacity:1;transform:none}96%,100%{opacity:0;transform:scale(.8)}}
+
+/* ---------- Glow & texture ---------- */
+.cap-fx-neon .w{color:#fff;text-shadow:0 0 3px #fff,0 0 9px var(--a),0 0 20px var(--a),0 0 38px var(--a)}
+.cap-fx-neon .w.is-key{color:var(--a);text-shadow:0 0 3px var(--a),0 0 10px var(--a),0 0 24px var(--a),0 0 44px var(--a)}
+.cap-prev.play.cap-fx-neon .w{animation:cap-k-neon var(--dur) steps(1,end) calc(var(--i,0)*180ms) infinite both}
+@keyframes cap-k-neon{0%{opacity:.08}5%{opacity:.9}8%{opacity:.15}12%{opacity:1}16%{opacity:.3}19%,60%{opacity:1}62%{opacity:.5}64%,92%{opacity:1}96%,100%{opacity:.08}}
+
+.cap-fx-outlinefill .w{-webkit-text-stroke:1.5px var(--b)}
+.cap-fx-outlinefill .w.is-key{-webkit-text-stroke-color:var(--a)}
+.cap-prev.play.cap-fx-outlinefill .w{color:transparent;background:linear-gradient(90deg,var(--b) 50%,transparent 50%) 100% 0/200% 100%;-webkit-background-clip:text;background-clip:text;animation:cap-k-outlinefill var(--dur) cubic-bezier(.5,0,.2,1) calc(var(--i,0)*280ms) infinite both}
+.cap-prev.play.cap-fx-outlinefill .w.is-key{background-image:linear-gradient(90deg,var(--a) 50%,transparent 50%)}
+@keyframes cap-k-outlinefill{0%{background-position:100% 0;opacity:0}8%{opacity:1}34%,90%{background-position:0 0;opacity:1}98%,100%{background-position:100% 0;opacity:0}}
+
+.cap-prev.play.cap-fx-shimmer .w{color:transparent;background:linear-gradient(110deg,color-mix(in srgb,var(--b) 45%,#111) 38%,#fff 50%,color-mix(in srgb,var(--b) 45%,#111) 62%) 160% 0/260% 100%;-webkit-background-clip:text;background-clip:text;animation:cap-k-shimmer var(--dur) ease-in-out calc(var(--i,0)*160ms) infinite both}
+.cap-prev.play.cap-fx-shimmer .w.is-key{background-image:linear-gradient(110deg,color-mix(in srgb,var(--a) 55%,#111) 38%,#fff 50%,color-mix(in srgb,var(--a) 55%,#111) 62%)}
+@keyframes cap-k-shimmer{0%{background-position:160% 0}70%,100%{background-position:-60% 0}}
+
+.cap-fx-handwrite .w{font-family:"Bradley Hand","Segoe Script","Brush Script MT",cursive;font-style:italic;font-weight:400;font-size:1.45em;letter-spacing:.02em}
+.cap-prev.play.cap-fx-handwrite .w{animation:cap-k-handwrite var(--dur) cubic-bezier(.4,0,.4,1) calc(var(--i,0)*560ms) infinite both}
+@keyframes cap-k-handwrite{0%{clip-path:inset(-20% 100% -20% 0)}22%,88%{clip-path:inset(-20% -8% -20% -8%)}96%,100%{clip-path:inset(-20% -8% -20% -8%);opacity:0}}
+
+.cap-fx-extrude .w{--ad:color-mix(in srgb,var(--a) 62%,#000);color:var(--b);text-shadow:1px 1px 0 var(--ad),2px 2px 0 var(--ad),3px 3px 0 var(--ad),4px 4px 0 var(--ad),5px 5px 0 var(--ad),6px 6px 0 var(--ad),8px 10px 12px rgba(0,0,0,.6)}
+.cap-fx-extrude .w.is-key{color:var(--a);--ad:color-mix(in srgb,var(--a) 45%,#000)}
+.cap-prev.play.cap-fx-extrude .w{animation:cap-k-extrude var(--dur) cubic-bezier(.3,1.3,.5,1) calc(var(--i,0)*130ms) infinite both}
+@keyframes cap-k-extrude{0%{opacity:0;transform:translate(0,0);text-shadow:0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 rgba(0,0,0,0)}18%{opacity:1;transform:translate(-3px,-3px);text-shadow:1px 1px 0 var(--ad),2px 2px 0 var(--ad),3px 3px 0 var(--ad),4px 4px 0 var(--ad),5px 5px 0 var(--ad),6px 6px 0 var(--ad),8px 10px 12px rgba(0,0,0,.6)}86%{opacity:1;transform:translate(-3px,-3px)}96%,100%{opacity:0;transform:translate(0,0);text-shadow:0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 var(--ad),0 0 0 rgba(0,0,0,0)}}
+
+/* ---------- Creator styles ---------- */
+.cap-fx-hormozi{font-weight:900;font-size:25px;text-transform:uppercase}
+.cap-fx-hormozi .w{-webkit-text-stroke:1px #000;paint-order:stroke fill;text-shadow:0 3px 0 #000,0 0 8px rgba(0,0,0,.6)}
+.cap-prev.play.cap-fx-hormozi .w{animation:cap-k-hormozi var(--dur) cubic-bezier(.3,1.5,.5,1) calc(var(--i,0)*150ms) infinite both}
+@keyframes cap-k-hormozi{0%{opacity:0;transform:scale(.6)}7%{opacity:1;transform:scale(1.2)}12%{transform:scale(1)}86%{opacity:1;transform:scale(1)}94%,100%{opacity:0;transform:scale(.92)}}
+.cap-prev.play.cap-fx-hormozi .w.is-key{animation-name:cap-k-hormozi-key}
+@keyframes cap-k-hormozi-key{0%{opacity:0;transform:scale(.6)}7%{opacity:1;transform:scale(1.3)}13%{transform:scale(1.08)}86%{opacity:1;transform:scale(1.08)}94%,100%{opacity:0;transform:scale(1)}}
+
+.cap-fx-mrbeast{font-weight:900;font-size:25px;text-transform:uppercase}
+.cap-fx-mrbeast .w{-webkit-text-stroke:5px #000;paint-order:stroke fill;text-shadow:4px 5px 0 #000}
+.cap-prev.play.cap-fx-mrbeast .w{animation:cap-k-mrbeast var(--dur) ease-out calc(var(--i,0)*130ms) infinite both}
+.cap-prev.play.cap-fx-mrbeast .w.is-key{animation-name:cap-k-mrbeast,cap-k-mrbeast-color;animation-duration:var(--dur),1.2s;animation-iteration-count:infinite,infinite;animation-timing-function:ease-out,steps(1,end)}
+@keyframes cap-k-mrbeast{0%{opacity:0;transform:translateY(40px) scale(.5) rotate(-6deg)}9%{opacity:1;transform:translateY(-16px) scale(1.15) rotate(3deg)}15%{transform:translateY(4px) scale(.97) rotate(-1deg)}20%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes cap-k-mrbeast-color{0%{color:var(--a)}33%{color:#38bdf8}66%{color:#f472b6}100%{color:var(--a)}}
+
+.cap-fx-minimal{align-items:flex-end;padding-bottom:14px;font-weight:500;font-size:15px;letter-spacing:.01em}
+.cap-fx-minimal .w.is-key{color:var(--b);font-weight:700}
+.cap-prev.play.cap-fx-minimal .w{animation:cap-k-minimal var(--dur) ease-out calc(var(--i,0)*220ms) infinite both}
+@keyframes cap-k-minimal{0%{opacity:0;transform:translateY(4px)}20%,86%{opacity:1;transform:none}98%,100%{opacity:0}}
+
+.cap-fx-luxury{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:13px;letter-spacing:.3em;text-transform:uppercase;gap:.4em .9em}
+.cap-fx-luxury .w{margin-right:-.3em}
+.cap-fx-luxury .w.is-key{color:var(--a)}
+.cap-prev.play.cap-fx-luxury .w{animation:cap-k-luxury var(--dur) ease-in-out calc(var(--i,0)*380ms) infinite both}
+@keyframes cap-k-luxury{0%{opacity:0;filter:blur(3px);letter-spacing:.45em}34%,82%{opacity:1;filter:blur(0);letter-spacing:.3em}98%,100%{opacity:0;filter:blur(2px)}}
+
+.cap-fx-softbox{font-family:ui-rounded,"SF Pro Rounded","Nunito","Varela Round",system-ui,sans-serif;font-size:21px}
+.cap-fx-softbox .w.is-key{color:#1f2430}
+.cap-fx-softbox .w.is-key::before{content:"";position:absolute;inset:-.06em -.38em;background:color-mix(in srgb,var(--a) 38%,#fff);border-radius:.55em;z-index:-1}
+.cap-prev.play.cap-fx-softbox .w{animation:cap-k-fadeup var(--dur) ease-out calc(var(--i,0)*110ms) infinite both}
+.cap-prev.play.cap-fx-softbox .w.is-key::before{transform-origin:center;animation:cap-k-softbox var(--dur) cubic-bezier(.3,1.3,.5,1) calc(var(--i,0)*110ms) infinite both}
+@keyframes cap-k-softbox{0%,14%{opacity:0;transform:scale(.6,.4)}30%,88%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(1)}}
+
+.cap-fx-podcast{align-items:flex-end;padding:0 14% 10px;gap:.12em .12em;font-weight:500;font-size:14px;line-height:1.25}
+.cap-fx-podcast .w{background:rgba(0,0,0,.72);padding:.12em .35em;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+.cap-fx-podcast .w.is-key{color:var(--b)}
+.cap-prev.play.cap-fx-podcast .w{animation:cap-k-podcast var(--dur) linear calc(var(--i,0)*180ms) infinite both}
+@keyframes cap-k-podcast{0%,3%{opacity:0}10%,88%{opacity:1}96%,100%{opacity:0}}
+
+@media (prefers-reduced-motion: reduce){
+  .cap-prev.play.cap-fx-punch .w{position:relative;inset:auto;display:inline-block;font-size:inherit}
+  .cap-prev.play .w,.cap-prev.play .w::before,.cap-prev.play .w::after,.cap-prev.play::before{animation:none !important}
+}
