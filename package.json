@@ -8,9 +8,11 @@
     "dev": "node --env-file-if-exists=.env server.js",
     "start": "node server.js"
   },
-  "engines": { "node": ">=20.6" },
+  "engines": {
+    "node": ">=20.6"
+  },
   "dependencies": {
-    "@sparticuz/chromium": "^131.0.0",
-    "puppeteer-core": "^23.11.1"
+    "@sparticuz/chromium": "^153.0.0",
+    "puppeteer-core": "^25.16.0"
   }
 }
