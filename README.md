@@ -1,6 +1,6 @@
 # Brand Prompt Studio
 
-A creative prompt builder that can read a brand from a website or an image. A model (Claude, OpenAI, or Kimi) extracts the brand essence, visual language, color scheme, and voice, then fills the brief so you can copy an on-brand prompt.
+A creative prompt builder that can read a brand from a website or an image. A model (Claude, OpenAI, Kimi, or any OpenRouter model) extracts the brand essence, visual language, color scheme, and voice, then fills the brief so you can copy an on-brand prompt.
 
 ## How it works
 
@@ -9,7 +9,7 @@ public/index.html     The app (image brief, analysis panel, motion & captions ta
 api/config.js         Tells the page which providers have keys
 api/analyze.js        Runs an analysis: reads the site or image, calls the model
 lib/site.js           Fetches a page, pulls copy, CSS colors, fonts, optional screenshot
-lib/providers.js      Claude, OpenAI, and Kimi adapters
+lib/providers.js      Claude, OpenAI, Kimi, and OpenRouter adapters
 lib/brief.js          The analyst prompt and the JSON schema the model returns
 server.js             Local server that runs the same handlers
 ```
@@ -69,12 +69,16 @@ GitHub Pages can't host this version, because it needs a server to hold the keys
 |---|---|---|---|
 | Claude | `ANTHROPIC_API_KEY` | `claude-haiku-5-5` | `claude-sonnet-5-5` |
 | OpenAI | `OPENAI_API_KEY` | `gpt-5.5` | `gpt-5.5` |
-| Kimi | `MOONSHOT_API_KEY` | `kimi-k2.5` | `kimi-k2.6` |
+| Kimi | `MOONSHOT_API_KEY` | `kimi-k3.1-pro-highspeed` | `kimi-k3.1-pro` |
+| OpenRouter | `OPENROUTER_API_KEY` (or `OPEN_ROUTER_KEY`) | `google/gemini-3.8-flash` | `google/gemini-4-argon` |
 
 Every model name can be overridden with an environment variable (see `.env.example`), so you can switch versions without code changes. Providers without a key are shown as unavailable in the menu.
 
 Notes:
 - **Codex** is OpenAI's coding agent. For brand and image analysis, use a general GPT model through `OPENAI_*_MODEL`. Codex-tuned models are optimized for code, may not accept images, and may not be offered on the Chat Completions endpoint this app uses.
+- **Claude** needs a Console API key (`sk-ant-api03...`). A Claude Code login token (`sk-ant-oat01...`) is rejected by the API.
+- **OpenRouter** uses its OpenAI-compatible API, so any vision model it lists works. Set `OPENROUTER_QUICK_MODEL` and `OPENROUTER_DEEP_MODEL` to switch, for example to `anthropic/claude-sonnet-5.5`.
+- **Kimi** K3 models reason by default, which is too slow for the 60-second limit, so the app turns thinking off. Set `KIMI_THINKING=on` to re-enable it.
 - **Kimi** uses Moonshot's OpenAI-compatible API. China-region keys need `MOONSHOT_BASE_URL=https://api.moonshot.cn/v1`.
 - **Quick vs Deep:** Quick is fine for palette, typography, and mood. Deep read is better at audience, essence, and voice, where the quick model tends to stay generic.
 
