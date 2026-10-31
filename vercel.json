@@ -3,7 +3,7 @@
   "outputDirectory": "public",
   "functions": {
     "api/analyze.js": {
-      "maxDuration": 60,
+      "maxDuration": 120,
       "memory": 1769
     },
     "api/config.js": {

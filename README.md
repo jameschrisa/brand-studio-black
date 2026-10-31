@@ -57,7 +57,7 @@ npx vercel env add ACCESS_KEY
 npx vercel --prod
 ```
 
-Or import the repo in the Vercel dashboard and add the environment variables under Settings → Environment Variables. `vercel.json` already sets a 60-second limit for analysis and serves the app from `/public`.
+Or import the repo in the Vercel dashboard and add the environment variables under Settings → Environment Variables. `vercel.json` already sets a 120-second limit for analysis and serves the app from `/public`.
 
 **Set `ACCESS_KEY` before sharing the URL.** Without it, anyone who finds the deployment can run analyses on your API credits. The page asks for the key once and remembers it in that browser.
 
@@ -78,7 +78,7 @@ Notes:
 - **Codex** is OpenAI's coding agent. For brand and image analysis, use a general GPT model through `OPENAI_*_MODEL`. Codex-tuned models are optimized for code, may not accept images, and may not be offered on the Chat Completions endpoint this app uses.
 - **Claude** needs a Console API key (`sk-ant-api03...`). A Claude Code login token (`sk-ant-oat01...`) is rejected by the API.
 - **OpenRouter** uses its OpenAI-compatible API, so any vision model it lists works. Set `OPENROUTER_QUICK_MODEL` and `OPENROUTER_DEEP_MODEL` to switch, for example to `anthropic/claude-sonnet-5.5`.
-- **Kimi** K3 models reason by default, which is too slow for the 60-second limit, so the app turns thinking off. Set `KIMI_THINKING=on` to re-enable it.
+- **Kimi** K3 models reason by default, which is too slow for a web request, so the app turns thinking off. Set `KIMI_THINKING=on` to re-enable it.
 - **Kimi** uses Moonshot's OpenAI-compatible API. China-region keys need `MOONSHOT_BASE_URL=https://api.moonshot.cn/v1`.
 - **Quick vs Deep:** Quick is fine for palette, typography, and mood. Deep read is better at audience, essence, and voice, where the quick model tends to stay generic.
 
