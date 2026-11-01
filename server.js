@@ -8,7 +8,7 @@ import { gateEnabled, handleGate } from "./lib/gate.js";
 
 const root = fileURLToPath(new URL("./public/", import.meta.url));
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".json": "application/json" };
-const routes = { "/api/analyze": "./api/analyze.js", "/api/config": "./api/config.js" };
+const routes = { "/api/analyze": "./api/analyze.js", "/api/config": "./api/config.js", "/api/generate": "./api/generate.js" };
 
 function wrap(res) {
   res.status = code => { res.statusCode = code; return res; };

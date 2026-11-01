@@ -8,6 +8,7 @@ A creative prompt builder that can read a brand from a website or an image. A mo
 public/index.html     The app (image brief, analysis panel, motion & captions tab)
 api/config.js         Tells the page which providers have keys
 api/analyze.js        Runs an analysis: reads the site or image, calls the model
+api/generate.js       Writes hook, headline or caption options for the input boxes
 lib/site.js           Fetches a page, pulls copy, CSS colors, fonts, optional screenshot
 lib/providers.js      Claude, OpenAI, Kimi, and OpenRouter adapters
 lib/gate.js           Site password gate (shared by middleware.js and server.js)
@@ -37,6 +38,19 @@ caption-preview.css   Animated previews for the caption cards (runs under the .p
 The camera library and the example thumbnails and clips come from Kapwing's AI Camera Prompt Guide (images and videos are loaded from Kapwing's CDN, not stored in this repo): https://www.kapwing.com/resources/the-complete-ai-camera-prompt-guide-77-shots-and-movements/
 
 If a data file is missing, the tab shows "library failed to load" for that picker and the rest still works.
+
+## Generate buttons
+
+Fields that take copy have a small Generate button on the label row: **Hook** and **Headline** in the Image brief tab (Campaign), and **Caption text** in the Motion & captions tab. Click it and a short list of options appears under the field. Click an option to fill the field (a caption option fills Caption text, one line per beat, and Emphasis words), or press Esc or Close to dismiss. More asks for a fresh set. Nothing you typed is changed until you pick an option.
+
+Generate uses the provider chosen in the Model select of the analysis panel, always on that provider's quick model. Hook and Headline are saved with the brand, and when filled they appear in both prompts as locked copy that the model must use exactly.
+
+`POST /api/generate` takes JSON `{provider, kind, brand, context}` where `kind` is `hooks`, `headlines` or `captions`. It checks the same access as `/api/analyze` (sign-in cookie or `x-access-key`) and returns `{options, meta:{provider, model, seconds}}`:
+
+- `hooks` and `headlines`: `options` is six strings, each within `context.maxWords` (default 7 and 5).
+- `captions`: `options` is three objects `{lines, emphasis}`. The line count follows the clip duration (about one line per 1.5 seconds, 3 to 10), line length follows the Words on screen setting, and each emphasis word appears in its lines.
+
+Output is checked on the server: over-long options are dropped and dash punctuation is removed. Errors return `{error}` with a 400, 401, 502 or 500 status.
 
 ## Run locally
 

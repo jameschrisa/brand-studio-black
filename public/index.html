@@ -23,6 +23,9 @@
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none !important}
+::selection{background:rgba(0,112,243,.18);color:var(--fg)}
+input,textarea{caret-color:var(--blue)}
 html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
@@ -41,7 +44,7 @@ header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop
 
 .hero{max-width:1240px;margin:0 auto;padding:40px 24px 8px}
 .hero h1{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.04em;font-weight:600;margin:0 0 8px}
-.hero p{color:var(--fg-2);margin:0;max-width:60ch;font-size:15px}
+.hero p{color:var(--fg-2);margin:0;font-size:15px}
 
 .brands{max-width:1240px;margin:0 auto;padding:24px 24px 0}
 .brand-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
@@ -54,7 +57,7 @@ header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop
 main{max-width:1240px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;align-items:start}
 
 .panel{border:1px solid var(--line);border-radius:12px;background:var(--bg)}
-.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;padding:14px 20px;border-bottom:1px solid var(--line)}
 .panel-head h2{font-size:14px;font-weight:600;margin:0}
 .panel-head .meta{font-family:var(--mono);font-size:12px;color:var(--fg-3)}
 
@@ -62,6 +65,7 @@ fieldset{border:0;margin:0;padding:20px;border-bottom:1px solid var(--line)}
 fieldset:last-of-type{border-bottom:0}
 legend{float:left;width:100%;padding:0;margin:0 0 14px;font-size:13px;font-weight:600}
 legend span{font-weight:400;color:var(--fg-3);margin-left:6px}
+legend+*{clear:both}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;clear:both}
 .full{grid-column:1/-1}
 label{display:block;font-size:13px;color:var(--fg-2);margin-bottom:6px}
@@ -85,13 +89,15 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-
 .zone rect.text{fill:var(--line-2)}
 .zone button[aria-pressed="true"] rect.text{fill:var(--blue)}
 
-.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;padding:2px;gap:2px;background:var(--bg-2)}
-.seg button{height:26px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:12px}
+.seg{display:inline-flex;flex-wrap:wrap;max-width:100%;border:1px solid var(--line-2);border-radius:8px;padding:2px;gap:2px;background:var(--bg-2)}
+.seg button{height:26px;padding:0 10px;white-space:nowrap;border:0;border-radius:6px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:12px}
 .seg button[aria-pressed="true"]{background:var(--bg);color:var(--fg);box-shadow:0 0 0 1px var(--line-2)}
-.legend-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;clear:both}
+.legend-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:14px;clear:both}
+.legend-row .status-line{flex:1 1 220px;min-width:0}
 .legend-row legend{float:none;width:auto;margin:0}
 .count-note{font-size:12px;color:var(--fg-3);font-family:var(--mono)}
 .num{display:flex;align-items:center;border:1px solid var(--line-2);border-radius:8px;height:38px;overflow:hidden}
+.num button:focus-visible{outline-offset:-2px}
 .num button{width:36px;height:100%;border:0;background:var(--bg-2);cursor:pointer;color:var(--fg-2);font-size:16px}
 .num button:hover{color:var(--fg)}
 .num output{flex:1;text-align:center;font-family:var(--mono);font-size:13px}
@@ -117,7 +123,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 .legend{display:flex;gap:14px;align-items:center}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--fg);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;transition:opacity .2s,transform .2s;pointer-events:none;z-index:20;display:flex;gap:8px;align-items:center}
+.toast{max-width:calc(100vw - 32px);position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--fg);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;transition:opacity .2s,transform .2s;pointer-events:none;z-index:20;display:flex;gap:8px;align-items:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .toast svg{width:14px;height:14px;color:#4ade80}
 
@@ -135,6 +141,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 .status-line{font-size:12px;color:var(--fg-3);font-family:var(--mono)}
 .status-line.err{color:#c4132f}
 .status-line .ok{color:var(--green)}
+.status-line .dotok{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:1px}
 .btn.wide{width:100%;justify-content:center;height:40px;font-size:14px}
 .btn[disabled]{opacity:.5;cursor:default}
 .spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
@@ -160,14 +167,38 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   .preview{position:static}
   pre{max-height:none}
   .mobile-copy{display:flex;position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;justify-content:center;height:44px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
-  body{padding-bottom:80px}
+  body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  body.typing .mobile-copy{display:none}
+  .toast{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:560px){
   .grid{grid-template-columns:1fr}
   .zone{grid-template-columns:repeat(2,1fr)}
   .bar,.hero,.brands,.studio,main{padding-left:16px;padding-right:16px}
   .kbd{display:none}
+  .studio-body,.result{padding:16px}
+  fieldset{padding:16px}
+  .panel-head{padding:12px 16px}
+  .actions{padding:14px 16px}
+  #srcSeg+.status-line{flex-basis:100%}
 }
+
+/* Generate suggestions */
+.lrow{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px;margin-bottom:6px}
+.lrow label{margin:0}
+.btn.gen{height:26px;padding:0 8px;font-size:12px;border-radius:6px;margin-right:-8px}
+.btn.gen[aria-busy="true"]{color:var(--fg)}
+.sugg{margin-top:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg-2);overflow:hidden}
+.sg-list{display:flex;flex-direction:column}
+.sg-row{display:block;width:100%;text-align:left;padding:8px 12px;border:0;border-bottom:1px solid var(--line);background:transparent;cursor:pointer;color:var(--fg);font-size:13px;line-height:1.4}
+.sg-row:hover{background:var(--bg)}
+.sg-row:focus-visible{outline-offset:-2px;border-radius:0;background:var(--bg)}
+.sg-foot{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;min-height:34px}
+.sg-foot .status-line{flex:1 1 auto;min-width:0}
+.sg-foot .btn{height:26px;padding:0 8px;font-size:12px;border-radius:6px}
+.sg-err{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 12px}
+.sg-err .status-line{flex:1 1 auto;min-width:0}
+.sg-err .btn{height:26px;padding:0 8px;font-size:12px;border-radius:6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* App tabs */
@@ -184,12 +215,16 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 .pick{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--bg)}
 .pick>summary{cursor:pointer;padding:10px 12px;display:flex;gap:10px;justify-content:space-between;align-items:center;font-size:13px;list-style:none}
 .pick>summary::-webkit-details-marker{display:none}
-.pick>summary::before{content:"\25B8";color:var(--fg-3);margin-right:-2px}
-.pick[open]>summary::before{content:"\25BE"}
+.pick>summary::before{content:"";flex:0 0 auto;width:6px;height:6px;border-right:1.5px solid var(--fg-3);border-bottom:1.5px solid var(--fg-3);transform:rotate(-45deg);margin:0 2px 0 3px;transition:transform .15s}
+.pick[open]>summary::before{transform:rotate(45deg)}
+.pick>summary:focus-visible{outline-offset:-2px;border-radius:10px}
+.pick>summary .pl{margin-right:auto}
 .pick .pl{font-weight:500;flex:0 0 auto}
 .pick .pv{color:var(--fg-3);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
 .pick .pbody{padding:0 12px 12px}
 .pick .ptools{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.pick .ptools input{width:auto;align-self:stretch;min-width:0}
+.pgrid :focus-visible,.zone :focus-visible{outline-offset:-2px}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:300px;overflow:auto;padding:2px}
 .pgrid.wide{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));max-height:440px}
 .pcard{text-align:left;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:9px 10px;cursor:pointer;color:var(--fg-2);display:block;min-width:0}
@@ -330,6 +365,16 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       <legend>Campaign</legend>
       <div class="grid">
         <div class="full"><label for="message">Core message</label><textarea id="message" data-k="message" rows="2" placeholder="One sentence"></textarea></div>
+        <div class="full" data-gen-wrap="hook">
+          <div class="lrow"><label for="hook">Hook <span style="color:var(--fg-3)">optional</span></label><button type="button" class="btn ghost gen" data-gen="hook" aria-controls="sg_hook">Generate</button></div>
+          <input type="text" id="hook" data-k="hook" placeholder="The opening line for the overlay">
+          <div class="sugg" id="sg_hook" hidden></div>
+        </div>
+        <div class="full" data-gen-wrap="headline">
+          <div class="lrow"><label for="headline">Headline <span style="color:var(--fg-3)">optional</span></label><button type="button" class="btn ghost gen" data-gen="headline" aria-controls="sg_headline">Generate</button></div>
+          <input type="text" id="headline" data-k="headline" placeholder="The overlay title">
+          <div class="sugg" id="sg_headline" hidden></div>
+        </div>
         <div>
           <label for="format">Platform and format</label>
           <select id="format" data-k="format">
@@ -496,7 +541,11 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       <legend>Captions</legend>
       <div id="mCapPick"><div id="pkCap"></div></div>
       <div class="grid" style="margin-top:14px">
-        <div class="full"><label for="m_cap">Caption text</label><textarea id="m_cap" data-m="capText" rows="4" placeholder="One line per beat"></textarea></div>
+        <div class="full" data-gen-wrap="caption">
+          <div class="lrow"><label for="m_cap">Caption text</label><button type="button" class="btn ghost gen" data-gen="caption" aria-controls="sg_caption">Generate</button></div>
+          <textarea id="m_cap" data-m="capText" rows="4" placeholder="One line per beat"></textarea>
+          <div class="sugg" id="sg_caption" hidden></div>
+        </div>
         <div class="full"><label for="m_emph">Emphasis words</label><input type="text" id="m_emph" data-m="emph" placeholder="Comma separated"></div>
         <div><label for="m_words">Words on screen</label>
           <select id="m_words" data-m="words"><option>Style default</option><option>1-3</option><option>4-6</option><option>Full line</option></select></div>
@@ -617,7 +666,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   function brandData(key){
     const base = brands[key];
     const edit = store.edits && store.edits[key];
-    return Object.assign({hooks:5,hookWords:7,titles:5,titleWords:5,extras:[],adjectives:(ADJ_DEFAULT[key]||[]).slice(),essence:"",voice:"",typography:"",imagery:"",adjCustom:"",camMode:"",cam:Object.assign({},CAM_DEFAULT[key]||{})}, base, edit || {});
+    return Object.assign({hooks:5,hookWords:7,titles:5,titleWords:5,extras:[],adjectives:(ADJ_DEFAULT[key]||[]).slice(),hook:"",headline:"",essence:"",voice:"",typography:"",imagery:"",adjCustom:"",camMode:"",cam:Object.assign({},CAM_DEFAULT[key]||{})}, base, edit || {});
   }
 
   /* Brand chips */
@@ -782,6 +831,12 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       T(" Avoid: "); V(s.avoid,"avoid"); T(". Keep the "); V(zone,""); T(" clean for overlay text; no rendered text or logos.");
       (s.rules||[]).forEach(r => { T(" "); V(r,""); T("."); });
       if(s.copyRule){ T(" Copy rule: "); V(s.copyRule,""); T("."); }
+      if((s.hook||"").trim() || (s.headline||"").trim()){
+        T(" Locked copy:");
+        if((s.hook||"").trim()){ T(" hook \""); V(s.hook,""); T("\""); }
+        if((s.headline||"").trim()){ T(" headline \""); V(s.headline,""); T("\""); }
+        T(". Use "+(((s.hook||"").trim() && (s.headline||"").trim()) ? "them" : "it")+" exactly in the overlay; still deliver the requested alternates.");
+      }
       T("\n\nReturn: one image prompt (aspect ratio "+ratio+"), "+s.hooks+" hooks (≤"+s.hookWords+" words), "+s.titles+" titles (≤"+s.titleWords+" words), the best hook + title pairing, and a short overlay type spec.");
       if(ex.length) T(" Also include: " + ex.map(x => ({ab:"a second contrasting direction",cta:"3 CTA button labels",alt:"alt text",neg:"a negative prompt"})[x]).join(", ") + ".");
       return out;
@@ -797,6 +852,13 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     if(s.essence && s.essence.trim()){ T("Brand essence: "); V(s.essence,""); T("\n"); }
     T("\n");
     if(s.voice && s.voice.trim()){ H("BRAND VOICE\n"); V(s.voice,""); T("\nWrite every hook and title in this voice.\n\n"); }
+    if((s.hook||"").trim() || (s.headline||"").trim()){
+      const both = (s.hook||"").trim() && (s.headline||"").trim();
+      H("LOCKED COPY\n");
+      if((s.hook||"").trim()){ T("Hook: "); V(s.hook,""); T("\n"); }
+      if((s.headline||"").trim()){ T("Headline: "); V(s.headline,""); T("\n"); }
+      T("Use this " + (both ? "hook and headline" : (s.hook||"").trim() ? "hook" : "headline") + " exactly in the overlay. Still deliver the requested alternates.\n\n");
+    }
     H("VISUAL DIRECTION\n");
     T("Style: "); V(s.style,"style"); T("\n");
     T("Palette: "); V(s.palette,"2-3 brand colors + 1 pop accent"); T("\n");
@@ -918,7 +980,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     });
     const saved = localStorage.getItem("promptBuilder.provider");
     if(saved && ready.some(p => p.id === saved)) sel.value = saved; else if(ready[0]) sel.value = ready[0].id;
-    st.innerHTML = ready.length ? '<span class="ok">●</span> ' + ready.map(p => p.label).join(", ") + " ready" : "No model keys set on the server";
+    st.innerHTML = ready.length ? '<span class="dotok"></span>' + ready.map(p => p.label).join(", ") + " ready" : "No model keys set on the server";
     if(!ready.length){ st.classList.add("err"); $("#analyze").disabled = true; }
     $("#keyRow").hidden = !an.config.authRequired;
     $("#signout").hidden = !an.config.gate;
@@ -1488,6 +1550,95 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       });
     });
   })();
+
+
+  /* ===== Generate suggestions (hook, headline, captions) ===== */
+  const GEN_ERR_PROVIDER = "No model is set up. Add an API key on the server (for example OPENAI_API_KEY), then reload.";
+  function genBrand(){
+    return {name:state.brandName, personality:state.personality, audience:state.audience, essence:state.essence, voice:state.voice, copyRule:state.copyRule, avoid:state.avoid};
+  }
+  function styleWordsHint(sty){
+    const m = sty && sty.prompt && sty.prompt.match(/\b(\d+(?:-\d+)?|one) words?(?: per (?:screen|line))?/i);
+    return m ? m[0] : "";
+  }
+  const GEN = {
+    hook:{kind:"hooks", field:"#hook", context:() => ({message:state.message, format:state.format, reaction:state.reaction, maxWords:state.hookWords}),
+      text:o => o, apply(o){ setField("#hook", o); }},
+    headline:{kind:"headlines", field:"#headline", context:() => ({message:state.message, format:state.format, reaction:state.reaction, hook:state.hook, maxWords:state.titleWords}),
+      text:o => o, apply(o){ setField("#headline", o); }},
+    caption:{kind:"captions", field:"#m_cap", context:() => {
+        const sty = findItem(CAPLIB && CAPLIB.styles, ms.style);
+        return {message:state.message, format:state.format, reaction:state.reaction, scene:ms.type === "caption" ? "" : ms.scene, captionStyle:sty ? sty.title : "", captionStylePrompt:sty ? sty.prompt : "", styleWords:styleWordsHint(sty), words:ms.words, case:ms.case, duration:parseInt(ms.dur, 10) || 8, aspect:ms.ratio, existing:ms.capText};
+      },
+      text:o => o.lines.join(" / "), apply(o){ setField("#m_cap", o.lines.join("\n")); setField("#m_emph", (o.emphasis || []).join(", ")); }}
+  };
+  function setField(sel, v){
+    const f = $(sel); f.value = v;
+    f.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+  function initGen(btn){
+    const key = btn.dataset.gen, cfg = GEN[key], box = $("#sg_" + key), wrap = btn.closest("[data-gen-wrap]");
+    let token = 0, busy = false;
+    const idle = btn.textContent;
+    function close(refocus){
+      token++; busy = false; box.hidden = true; box.innerHTML = ""; box.removeAttribute("aria-busy");
+      btn.disabled = false; btn.textContent = idle; btn.removeAttribute("aria-busy");
+      if(refocus) btn.focus();
+    }
+    function mkBtn(label, fn){ const b = el("button", "btn ghost", label); b.type = "button"; b.onclick = fn; return b; }
+    function showError(msg){
+      box.innerHTML = ""; box.hidden = false;
+      const row = el("div", "sg-err"); const st = el("span", "status-line err", msg); st.setAttribute("role", "alert");
+      row.append(st, mkBtn("Retry", run), mkBtn("Close", () => close(true))); box.append(row);
+    }
+    function showOptions(opts, meta){
+      box.innerHTML = "";
+      const list = el("div", "sg-list"); list.setAttribute("role", "group"); list.setAttribute("aria-label", "Suggestions");
+      opts.forEach(o => {
+        const b = el("button", "sg-row", cfg.text(o)); b.type = "button";
+        b.onclick = () => { cfg.apply(o); close(false); btn.focus(); toast(key === "caption" ? "Captions filled" : "Filled"); };
+        list.append(b);
+      });
+      const foot = el("div", "sg-foot");
+      const note = el("span", "status-line", meta && meta.seconds != null ? meta.provider + " · " + meta.seconds + "s" : "");
+      foot.append(note, mkBtn("More", run), mkBtn("Close", () => close(true)));
+      box.append(list, foot); box.hidden = false;
+      const first = list.querySelector(".sg-row"); if(first) first.focus();
+    }
+    async function run(){
+      if(busy) return;
+      const prov = $("#anProvider").value;
+      const ready = an.config && an.config.providers.some(p => p.configured && p.id === prov);
+      if(!ready){ showError(GEN_ERR_PROVIDER); return; }
+      busy = true; const mine = ++token;
+      btn.disabled = true; btn.textContent = "Writing…"; btn.setAttribute("aria-busy", "true"); box.setAttribute("aria-busy", "true");
+      try{
+        const r = await fetch("/api/generate", {
+          method:"POST",
+          headers:{ "content-type":"application/json", "x-access-key": $("#anKey").value.trim() },
+          body: JSON.stringify({ provider: prov, kind: cfg.kind, brand: genBrand(), context: cfg.context() })
+        });
+        const data = await r.json().catch(() => ({ error: "The server returned an unreadable response." }));
+        if(mine !== token) return;
+        if(r.status === 401) throw new Error("Your session has expired or the access key is wrong. Sign in again, then retry.");
+        if(!r.ok) throw new Error(data.error || ("Request failed with " + r.status));
+        busy = false; showOptions(data.options, data.meta);
+      }catch(e){
+        if(mine !== token) return;
+        busy = false; showError(e.message || "Couldn't generate. Try again.");
+      }finally{
+        if(mine === token){ busy = false; btn.disabled = false; btn.textContent = idle; btn.removeAttribute("aria-busy"); box.removeAttribute("aria-busy"); }
+      }
+    }
+    btn.onclick = run;
+    wrap.addEventListener("keydown", e => { if(e.key === "Escape" && !box.hidden){ e.preventDefault(); e.stopPropagation(); close(true); } });
+  }
+  document.querySelectorAll("[data-gen]").forEach(initGen);
+
+  /* Hide the floating copy button while a field has focus, so it never covers what is being typed */
+  const typingSel = "input,textarea,select";
+  document.addEventListener("focusin", e => { if(e.target.matches && e.target.matches(typingSel) && e.target.closest("form")) document.body.classList.add("typing"); });
+  document.addEventListener("focusout", () => document.body.classList.remove("typing"));
 
   buildStyleChips(); buildAdj(); buildZones(); renderBrands(); selectBrand(current);
   mReady = true;

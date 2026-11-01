@@ -6,6 +6,9 @@
       "maxDuration": 120,
       "memory": 1769
     },
+    "api/generate.js": {
+      "maxDuration": 60
+    },
     "api/config.js": {
       "maxDuration": 10
     }
