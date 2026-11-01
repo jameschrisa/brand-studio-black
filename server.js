@@ -4,6 +4,7 @@ import http from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gateEnabled, handleGate } from "./lib/gate.js";
 
 const root = fileURLToPath(new URL("./public/", import.meta.url));
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".json": "application/json" };
@@ -23,9 +24,31 @@ async function readBody(req) {
   try { return raw ? JSON.parse(raw) : {}; } catch { return {}; }
 }
 
+// Same site password gate as middleware.js, applied before routing. Open when SITE_PASSWORD is unset.
+async function gate(req, res) {
+  if (!gateEnabled(process.env)) return false;
+  const host = req.headers.host || "localhost";
+  const init = { method: req.method, headers: req.headers };
+  if (req.method === "POST" && new URL(req.url, "http://localhost").pathname === "/login") {
+    const chunks = [];
+    let size = 0;
+    for await (const c of req) { size += c.length; if (size > 100_000) break; chunks.push(c); }
+    init.body = Buffer.concat(chunks);
+  }
+  const out = await handleGate(new Request(`http://${host}${req.url}`, init), process.env.SITE_PASSWORD.trim());
+  if (!out) return false;
+  res.statusCode = out.status;
+  const cookies = out.headers.getSetCookie ? out.headers.getSetCookie() : [];
+  out.headers.forEach((v, k) => { if (k !== "set-cookie") res.setHeader(k, v); });
+  if (cookies.length) res.setHeader("set-cookie", cookies);
+  res.end(Buffer.from(await out.arrayBuffer()));
+  return true;
+}
+
 http.createServer(async (req, res) => {
   const path = new URL(req.url, "http://localhost").pathname;
   try {
+    if (await gate(req, res)) return;
     if (routes[path]) {
       req.body = req.method === "POST" ? await readBody(req) : {};
       const mod = await import(routes[path]);

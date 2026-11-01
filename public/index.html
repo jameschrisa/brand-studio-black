@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Brand Prompt Studio</title>
 <meta name="color-scheme" content="light">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script src="camera-data.js"></script>
@@ -34,6 +35,9 @@ header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop
 .crumb{color:var(--fg-2)}
 .bar .spacer{flex:1}
 .kbd{font-family:var(--mono);font-size:12px;color:var(--fg-3)}
+.signout{white-space:nowrap;font-size:12px;color:var(--fg-2);text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.signout:hover{border-color:var(--line-2);color:var(--fg)}
+.signout[hidden]{display:none}
 
 .hero{max-width:1240px;margin:0 auto;padding:40px 24px 8px}
 .hero h1{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.04em;font-weight:600;margin:0 0 8px}
@@ -193,6 +197,15 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 .pcard[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-bg)}
 .pcard b{display:block;font-weight:500;font-size:13px;color:var(--fg)}
 .pcard span.ph{display:block;font-size:12px;color:var(--fg-3);margin-top:2px}
+.pgrid.cam{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));max-height:400px}
+.pmedia{position:relative;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:var(--bg-2);margin-bottom:8px}
+.pmedia[hidden]{display:none}
+.pmedia img,.pmedia video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.psel{display:flex;gap:12px;align-items:flex-start;margin-top:10px}
+.psel[hidden]{display:none}
+.psel .pbox{margin-top:0;flex:1 1 auto;min-width:0}
+.psel .pmbig{flex:0 0 240px;width:240px;max-width:45%;margin-bottom:0}
+.psel .pmbig[hidden]{display:none}
 .pvwrap{overflow:hidden;border-radius:6px;margin-bottom:8px;background:#111;display:flex;align-items:center;justify-content:center;position:relative}
 .pvbig:empty{display:none}
 .pvwrap .cap-prev{height:92px;font-size:15px;padding:8px 10px}
@@ -204,20 +217,21 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 .src-credit a,.pnote a{color:var(--blue)}
 .pnote{font-size:12px;color:#b45309}
 @media (max-width:920px){.mmain{grid-template-columns:1fr}}
-@media (max-width:560px){.apptabs,.mmain{padding-left:16px;padding-right:16px}.pgrid,.pgrid.wide{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+@media (max-width:560px){.apptabs,.mmain{padding-left:16px;padding-right:16px}.pgrid,.pgrid.wide,.pgrid.cam{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.psel{flex-direction:column}.psel .pmbig{flex:none;width:100%;max-width:240px}.psel .pbox{width:100%}}
 </style>
 </head>
 <body>
 
 <header>
   <div class="bar">
-    <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 22 20H2L12 2Z" fill="#000"/></svg>
+    <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 20.66 7 12 12 3.34 7Z" fill="#8f8f8f"/><path d="M3.34 7 12 12V22L3.34 17Z" fill="#4d4d4d"/><path d="M12 12 20.66 7V17L12 22Z" fill="#000"/></svg>
     <span class="slash">/</span>
     <span class="title">Brand Prompt Studio</span>
     <span class="slash">/</span>
     <span class="crumb" id="crumb">Creative + overlays</span>
     <span class="spacer"></span>
     <span class="kbd">⌘ + Enter to copy</span>
+    <a class="signout" id="signout" href="/logout" hidden>Sign out</a>
   </div>
 </header>
 
@@ -307,7 +321,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
         <div><label for="brandName">Name</label><input type="text" id="brandName" data-k="brandName"></div>
         <div><label for="personality">Personality</label><input type="text" id="personality" data-k="personality" placeholder="3 words"></div>
         <div class="full"><label for="audience">Audience</label><input type="text" id="audience" data-k="audience" placeholder="Who they are and what they care about"></div>
-        <div class="full"><label for="essence">Brand essence <span style="color:var(--fg-3)">optional</span></label><textarea id="essence" data-k="essence" rows="2" placeholder="The core idea and feeling, in 1–2 sentences"></textarea></div>
+        <div class="full"><label for="essence">Brand essence <span style="color:var(--fg-3)">optional</span></label><textarea id="essence" data-k="essence" rows="2" placeholder="The core idea and feeling, in 1-2 sentences"></textarea></div>
         <div class="full"><label for="voice">Brand voice <span style="color:var(--fg-3)">optional</span></label><textarea id="voice" data-k="voice" rows="3" placeholder="How the brand sounds, example phrases, and what it never says"></textarea></div>
       </div>
     </fieldset>
@@ -350,7 +364,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
           <div class="chips" id="styleChips"></div>
           <input type="text" id="style" data-k="style" style="margin-top:8px" aria-label="Style, editable">
         </div>
-        <div class="full"><label for="palette">Palette</label><input type="text" id="palette" data-k="palette" placeholder="2–3 brand colors + 1 pop accent"></div>
+        <div class="full"><label for="palette">Palette</label><input type="text" id="palette" data-k="palette" placeholder="2-3 brand colors + 1 pop accent"></div>
         <div><label for="mood">Mood</label><input type="text" id="mood" data-k="mood"></div>
         <div><label for="motif">Signature motif <span style="color:var(--fg-3)">optional</span></label><input type="text" id="motif" data-k="motif"></div>
         <div><label for="typography">Typography <span style="color:var(--fg-3)">optional</span></label><input type="text" id="typography" data-k="typography" placeholder="Typefaces or their character"></div>
@@ -475,7 +489,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       <div id="pkSize"></div>
       <div id="pkMove"></div>
       <div id="pkMove2"></div>
-      <div class="hint src-credit">Camera library from <a id="camSrc" href="https://www.kapwing.com/resources/the-complete-ai-camera-prompt-guide-77-shots-and-movements/" target="_blank" rel="noopener">Kapwing's AI Camera Prompt Guide</a></div>
+      <div class="hint src-credit">The camera library and example clips are from <a id="camSrc" href="https://www.kapwing.com/resources/the-complete-ai-camera-prompt-guide-77-shots-and-movements/" target="_blank" rel="noopener">Kapwing's AI Camera Prompt Guide</a></div>
     </fieldset>
 
     <fieldset data-types="caption both">
@@ -775,7 +789,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
     H("ROLE\n"); T("You are a creative director pairing scroll-stopping visuals with short overlay copy.\n\n");
     H("BRIEF\n");
-    T("Brand: "); V(s.brandName,"brand name"); T(" — "); V(s.personality,"3-word personality"); T("\n");
+    T("Brand: "); V(s.brandName,"brand name"); T(" ("); V(s.personality,"3-word personality"); T(")\n");
     T("Audience: "); V(s.audience,"who + what they care about"); T("\n");
     T("Platform & format: "); V(s.format,"format"); T("\n");
     T("Core message: "); V(s.message,"one sentence"); T("\n");
@@ -785,7 +799,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     if(s.voice && s.voice.trim()){ H("BRAND VOICE\n"); V(s.voice,""); T("\nWrite every hook and title in this voice.\n\n"); }
     H("VISUAL DIRECTION\n");
     T("Style: "); V(s.style,"style"); T("\n");
-    T("Palette: "); V(s.palette,"2–3 brand colors + 1 pop accent"); T("\n");
+    T("Palette: "); V(s.palette,"2-3 brand colors + 1 pop accent"); T("\n");
     T("Mood: "); V(s.mood,"mood"); T("\n");
     if(s.typography && s.typography.trim()){ T("Typography: "); V(s.typography,""); T("\n"); }
     if(s.imagery && s.imagery.trim()){ T("Imagery: "); V(s.imagery,""); T("\n"); }
@@ -807,7 +821,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     T((n++)+". Best pairing: the strongest hook + title combo, with one sentence on why\n");
     T((n++)+". Overlay spec: font style, weight, color, and placement that matches the visual" + (s.typography && s.typography.trim() ? " and the brand typography" : "") + "\n");
     if(ex.includes("ab")) T((n++)+". Direction B: a second image prompt with a contrasting style, same message and text zone\n");
-    if(ex.includes("cta")) T((n++)+". CTA: 3 button labels, 2–3 words each, matched to the desired reaction\n");
+    if(ex.includes("cta")) T((n++)+". CTA: 3 button labels, 2-3 words each, matched to the desired reaction\n");
     if(ex.includes("alt")) T((n++)+". Alt text: one plain sentence describing the image for accessibility\n");
     if(ex.includes("neg")) T((n++)+". Negative prompt: comma-separated terms to exclude, drawn from the Avoid list\n");
     return out;
@@ -907,6 +921,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     st.innerHTML = ready.length ? '<span class="ok">●</span> ' + ready.map(p => p.label).join(", ") + " ready" : "No model keys set on the server";
     if(!ready.length){ st.classList.add("err"); $("#analyze").disabled = true; }
     $("#keyRow").hidden = !an.config.authRequired;
+    $("#signout").hidden = !an.config.gate;
     try{ $("#anKey").value = localStorage.getItem(KEY_STORE) || ""; }catch(e){}
     if($("#shotHint")) $("#shotHint").textContent = an.config.screenshot ? ", plus a live screenshot" : "";
     updateModelHint();
@@ -1155,12 +1170,71 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       tools.append(chipBox);
     }
     if(tools.children.length) body.append(tools);
-    const grid = el("div", "pgrid" + (o.preview ? " wide" : "")); grid.setAttribute("role", "group"); grid.setAttribute("aria-label", o.label);
+    const grid = el("div", "pgrid" + (o.preview ? " wide" : "") + (o.cam ? " cam" : "")); grid.setAttribute("role", "group"); grid.setAttribute("aria-label", o.label);
     const big = o.preview ? el("div", "pvbig") : null;
     const box = document.createElement("textarea"); box.className = "pbox"; box.readOnly = true; box.rows = 3; box.setAttribute("aria-label", o.label + " prompt text");
-    body.append(grid); if(big) body.append(big); body.append(box);
+    const mbig = o.cam ? el("div", "pmedia pmbig") : null;
+    body.append(grid); if(big) body.append(big);
+    if(mbig){ const row = el("div", "psel"); row.append(mbig, box); body.append(row); } else body.append(box);
+
+    /* Camera media: thumbnails for angles/sizes, clips for movements */
+    const RM = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : {matches:false};
+    const seen = new Set();
+    let io = null;
+    function loadClip(v){
+      if(!d.open || !seen.has(v) || v.dataset.on) return;
+      v.dataset.on = "1"; v.preload = "metadata"; v.src = v.dataset.src + "#t=0.1";
+    }
+    if(o.cam && "IntersectionObserver" in window){
+      io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) seen.add(e.target); else seen.delete(e.target); loadClip(e.target); }), {root:grid, rootMargin:"60px"});
+    }
+    function mediaFor(it, big){
+      if(!it.thumb && !it.video) return null;
+      const w = el("div", big ? "pmedia pmbig" : "pmedia");
+      const hide = () => { w.hidden = true; };
+      if(it.thumb && !it.video){
+        const im = document.createElement("img"); im.loading = "lazy"; im.decoding = "async"; im.alt = ""; im.src = it.thumb;
+        im.addEventListener("error", hide); w.append(im);
+      }else{
+        const v = document.createElement("video");
+        v.muted = true; v.loop = true; v.playsInline = true; v.preload = "none"; v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
+        v.dataset.src = it.video; v.addEventListener("error", hide); w.append(v);
+      }
+      return w;
+    }
+    function playV(v){ if(!RM.matches && v && v.dataset.on){ const p = v.play(); if(p && p.catch) p.catch(() => {}); } }
+    function stopV(v){ if(v){ v.pause(); try{ v.currentTime = 0.1; }catch(e){} } }
+    function setBig(){
+      if(!mbig) return;
+      const sel = findItem(o.items, ms[o.field]);
+      mbig.innerHTML = "";
+      if(!sel || !(sel.thumb || sel.video)){ mbig.hidden = true; return; }
+      mbig.hidden = false;
+      if(sel.video){
+        const v = document.createElement("video");
+        v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
+        v.preload = "metadata"; v.addEventListener("error", () => { mbig.hidden = true; });
+        if(d.open){ v.src = sel.video + "#t=0.1"; v.dataset.on = "1"; if(!RM.matches) playV(v); }
+        else v.dataset.src = sel.video;
+        mbig.append(v);
+      }else{
+        const im = document.createElement("img"); im.alt = ""; im.decoding = "async"; im.src = sel.thumb;
+        im.addEventListener("error", () => { mbig.hidden = true; }); mbig.append(im);
+      }
+    }
+    d.addEventListener("toggle", () => {
+      if(o.cam){
+        grid.querySelectorAll("video").forEach(loadClip);
+        const bv = mbig && mbig.querySelector("video");
+        if(bv){
+          if(d.open){ if(!bv.dataset.on){ bv.src = bv.dataset.src + "#t=0.1"; bv.dataset.on = "1"; } playV(bv); }
+          else bv.pause();
+        }
+      }
+    });
 
     function fill(){
+      if(io){ io.disconnect(); seen.clear(); }
       grid.innerHTML = "";
       const cur = ms[o.field];
       const list = o.items.filter(it => (!cat || it.category === cat) && (!q || (it.title + " " + (it.hint || "") + " " + (it.category || "")).toLowerCase().includes(q)));
@@ -1175,6 +1249,19 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
           b.addEventListener("focus", () => w.firstChild.classList.add("play"));
           const off = () => { if(b.getAttribute("aria-pressed") !== "true") w.firstChild.classList.remove("play"); };
           b.addEventListener("mouseleave", off); b.addEventListener("blur", off);
+        }
+        if(o.cam){
+          const m = mediaFor(it, false);
+          if(m){
+            b.append(m);
+            const v = m.querySelector("video");
+            if(v){
+              if(io) io.observe(v);
+              const on = () => playV(v), off = () => stopV(v);
+              b.addEventListener("mouseenter", on); b.addEventListener("focus", on);
+              b.addEventListener("mouseleave", off); b.addEventListener("blur", off);
+            }
+          }
         }
         const t = el("b", null, it.title), h = el("span", "ph", it.hint || "");
         b.append(t, h);
@@ -1191,6 +1278,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
         const p = b.querySelector(".cap-prev"); if(p) p.classList.toggle("play", on);
       });
       box.hidden = !sel; box.value = sel ? sel.prompt : "";
+      setBig();
       if(big){ big.hidden = !sel; big.innerHTML = sel ? capPrev(sel, true) : ""; }
     }
     fill(); sync();
@@ -1207,10 +1295,10 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   function cats(list){ return list.map(x => x.category).filter((c, i, a) => c && a.indexOf(c) === i); }
   if(CAMLIB){
     $("#camSrc").href = CAMLIB.source || $("#camSrc").href;
-    mount("#pkAngle", "Angle", CAMLIB.angles, "angle");
-    mount("#pkSize", "Shot size", CAMLIB.sizes, "size");
-    mount("#pkMove", "Movement", CAMLIB.moves, "move", {search:"Search movements", cats:cats(CAMLIB.moves)});
-    mount("#pkMove2", "Then move (optional)", CAMLIB.moves, "move2", {search:"Search second movement", cats:cats(CAMLIB.moves)});
+    mount("#pkAngle", "Angle", CAMLIB.angles, "angle", {cam:true});
+    mount("#pkSize", "Shot size", CAMLIB.sizes, "size", {cam:true});
+    mount("#pkMove", "Movement", CAMLIB.moves, "move", {search:"Search movements", cats:cats(CAMLIB.moves), cam:true});
+    mount("#pkMove2", "Then move (optional)", CAMLIB.moves, "move2", {search:"Search second movement", cats:cats(CAMLIB.moves), cam:true});
   }else{
     $("#pkAngle").append(el("div", "pnote", "Camera library failed to load"));
   }

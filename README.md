@@ -10,6 +10,8 @@ api/config.js         Tells the page which providers have keys
 api/analyze.js        Runs an analysis: reads the site or image, calls the model
 lib/site.js           Fetches a page, pulls copy, CSS colors, fonts, optional screenshot
 lib/providers.js      Claude, OpenAI, Kimi, and OpenRouter adapters
+lib/gate.js           Site password gate (shared by middleware.js and server.js)
+middleware.js         Vercel Routing Middleware that applies the gate to every path
 lib/brief.js          The analyst prompt and the JSON schema the model returns
 server.js             Local server that runs the same handlers
 ```
@@ -32,7 +34,7 @@ caption-data.js       window.CAPTION_LIB: caption styles with spec, effect class
 caption-preview.css   Animated previews for the caption cards (runs under the .play class)
 ```
 
-The camera library comes from Kapwing's AI Camera Prompt Guide: https://www.kapwing.com/resources/the-complete-ai-camera-prompt-guide-77-shots-and-movements/
+The camera library and the example thumbnails and clips come from Kapwing's AI Camera Prompt Guide (images and videos are loaded from Kapwing's CDN, not stored in this repo): https://www.kapwing.com/resources/the-complete-ai-camera-prompt-guide-77-shots-and-movements/
 
 If a data file is missing, the tab shows "library failed to load" for that picker and the rest still works.
 
@@ -60,6 +62,15 @@ npx vercel --prod
 Or import the repo in the Vercel dashboard and add the environment variables under Settings → Environment Variables. `vercel.json` already sets a 120-second limit for analysis and serves the app from `/public`.
 
 **Set `ACCESS_KEY` before sharing the URL.** Without it, anyone who finds the deployment can run analyses on your API credits. The page asks for the key once and remembers it in that browser.
+
+## Site password
+
+Set `SITE_PASSWORD` to put the whole site behind a password: pages, static files and `/api`. Visitors see a sign-in page, and a correct password sets a 30-day cookie. Signed-in guests can run analyses without knowing `ACCESS_KEY`, and the Access key field is hidden for them. The password is never stored in the repo, only in the environment.
+
+- **Vercel:** `npx vercel env add SITE_PASSWORD` (or Settings, Environment Variables), then redeploy. `middleware.js` runs as Vercel Routing Middleware and enforces it.
+- **Local:** add `SITE_PASSWORD=...` to `.env`. With it unset, local dev stays open.
+- **Sign out:** use the Sign out link in the header, or open `/logout`.
+- Changing the password signs everyone out, because the cookie is derived from it.
 
 GitHub Pages can't host this version, because it needs a server to hold the keys and fetch other sites. You can still link to the Vercel URL from your GitHub Pages site.
 

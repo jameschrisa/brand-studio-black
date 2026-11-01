@@ -8,7 +8,7 @@ const MAX_IMAGE_CHARS = 6_000_000; // about 4.4 MB of base64
 export default async function handler(req, res) {
   res.setHeader("cache-control", "no-store");
   if (req.method !== "POST") return res.status(405).json({ error: "Use POST." });
-  if (!authorized(req)) return res.status(401).json({ error: "Access key missing or incorrect." });
+  if (!(await authorized(req))) return res.status(401).json({ error: "Access key missing or incorrect." });
 
   const { provider = "claude", depth = "quick", url = "", image = "", notes = "" } = req.body || {};
   const p = getProvider(provider);
