@@ -79,7 +79,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{height:30px;padding:0 11px;border:1px solid var(--line);border-radius:6px;background:var(--bg-2);color:var(--fg-2);cursor:pointer;font-size:13px}
 .chip:hover{color:var(--fg);border-color:var(--line-2)}
-.chip[aria-pressed="true"]{background:var(--blue-bg);border-color:#b3d4ff;color:var(--blue)}
+.chip[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:#fff}
+.chip[aria-pressed="true"]:hover{color:#fff}
 
 .zone{clear:both;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .zone button{border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer;padding:8px 6px 6px;color:var(--fg-2);font-size:12px}
@@ -90,8 +91,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-
 .zone button[aria-pressed="true"] rect.text{fill:var(--blue)}
 
 .seg{display:inline-flex;flex-wrap:wrap;max-width:100%;border:1px solid var(--line-2);border-radius:8px;padding:2px;gap:2px;background:var(--bg-2)}
-.seg button{height:26px;padding:0 10px;white-space:nowrap;border:0;border-radius:6px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:12px}
-.seg button[aria-pressed="true"]{background:var(--bg);color:var(--fg);box-shadow:0 0 0 1px var(--line-2)}
+.seg button{height:26px;padding:0 10px;white-space:nowrap;border:0;border-radius:6px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:12px}
+.seg button:hover{color:var(--fg)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:#fff;box-shadow:none}
 .legend-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:14px;clear:both}
 .legend-row .status-line{flex:1 1 220px;min-width:0}
 .legend-row legend{float:none;width:auto;margin:0}
@@ -113,8 +115,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-
 
 .preview{position:sticky;top:76px}
 .tabs{display:flex;gap:2px}
-.tab{height:28px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:13px}
-.tab[aria-selected="true"]{background:var(--bg-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.tab{height:28px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:13px}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{background:var(--fg);color:#fff;box-shadow:none}
 pre{margin:0;padding:20px;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:calc(100vh - 230px);overflow:auto;color:var(--fg-2)}
 pre .h{color:var(--fg);font-weight:500}
 pre .v{color:var(--fg);background:var(--blue-bg);border-radius:3px;padding:0 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
@@ -203,10 +206,12 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
 /* App tabs */
 .apptabs{max-width:1240px;margin:0 auto;padding:20px 24px 0}
-.apptabs .tl{display:flex;gap:4px;border-bottom:1px solid var(--line)}
-.apptab{height:38px;padding:0 14px;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;background:transparent;color:var(--fg-3);cursor:pointer;font-size:14px;font-weight:500}
+.apptabs .tl{display:flex;gap:4px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.apptab{height:34px;padding:0 14px;border:0;border-radius:8px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:14px;font-weight:500}
 .apptab:hover{color:var(--fg)}
-.apptab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--fg)}
+.apptab[aria-selected="true"]{background:var(--fg);color:#fff}
+/* Keyboard focus inverts too; dark gray keeps it distinct from the selected tab. */
+.seg button:focus-visible:not([aria-pressed="true"]),.tab:focus-visible:not([aria-selected="true"]),.apptab:focus-visible:not([aria-selected="true"]),.chip:focus-visible:not([aria-pressed="true"]){background:var(--fg-2);color:#fff;border-color:var(--fg-2)}
 
 /* Motion panel */
 .mmain{max-width:1240px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;align-items:start}
