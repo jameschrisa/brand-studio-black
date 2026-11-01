@@ -1024,7 +1024,9 @@ async function init() {
     if (!W || !H) return;
     const asp = W / H;
     const ext = S.ovExt;
-    ovCam.left = -ext * asp * 0.62; ovCam.right = ext * asp * 0.62;
+    // shift the set left so the subject sits clear of the camera-view inset on the right
+    const halfW = ext * asp * 0.62, shiftX = halfW * 2 * (W < 560 ? 0.2 : 0.17);
+    ovCam.left = -halfW + shiftX; ovCam.right = halfW + shiftX;
     ovCam.top = ext * 0.62; ovCam.bottom = -ext * 0.62;
     const dir = new THREE.Vector3(Math.sin(S.ov.az) * Math.cos(S.ov.el), Math.sin(S.ov.el), Math.cos(S.ov.az) * Math.cos(S.ov.el));
     ovCam.position.copy(S.ovC).addScaledVector(dir, 80);
