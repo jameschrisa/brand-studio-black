@@ -112,6 +112,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-
 .btn.ghost{border-color:transparent;background:transparent;color:var(--fg-2)}
 .btn.ghost:hover{color:var(--fg);background:var(--bg)}
 .btn svg{width:14px;height:14px}
+#csave{white-space:nowrap}
 
 .preview{position:sticky;top:76px}
 .tabs{display:flex;gap:2px}
@@ -256,6 +257,15 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 .src-credit{margin-top:6px}
 .src-credit a,.pnote a{color:var(--blue)}
 .pnote{font-size:12px;color:#b45309}
+.chrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chwrap{display:inline-flex;align-items:center}
+.chwrap .chip{border-radius:6px 0 0 6px}
+.chwrap .chip-x{height:30px;width:28px;padding:0;border:1px solid var(--line);border-left:0;border-radius:0 6px 6px 0;background:var(--bg-2);color:var(--fg-3);cursor:pointer;font-size:15px;line-height:1}
+.chwrap .chip-x:hover{color:#c4132f;border-color:var(--line-2)}
+.chsave{display:flex;gap:8px}
+.chsave input{flex:1 1 auto;min-width:0}
+.chstart .actions{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.chstart .actions .status-line{flex:1 1 200px;min-width:0}
 @media (max-width:920px){.mmain{grid-template-columns:1fr}}
 @media (max-width:560px){.apptabs,.mmain{padding-left:16px;padding-right:16px}.pgrid,.pgrid.wide,.pgrid.cam{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.psel{flex-direction:column}.psel .pmbig{flex:none;width:100%;max-width:240px}.psel .pbox{width:100%}}
 </style>
@@ -288,6 +298,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   <div class="tl" role="tablist" aria-label="Workspace" id="appTabs">
     <button type="button" class="apptab" role="tab" id="tab-image" aria-controls="panel-image" aria-selected="true" data-app="image">Image brief</button>
     <button type="button" class="apptab" role="tab" id="tab-motion" aria-controls="panel-motion" aria-selected="false" tabindex="-1" data-app="motion">Motion &amp; captions</button>
+    <button type="button" class="apptab" role="tab" id="tab-character" aria-controls="panel-character" aria-selected="false" tabindex="-1" data-app="character">Character sheet</button>
   </div>
 </div>
 
@@ -583,6 +594,76 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     <div class="foot">
       <div class="legend"><span><i style="background:var(--blue-bg);box-shadow:inset 0 0 0 1px #b3d4ff"></i>Your inputs</span><span><i style="background:#fff7ed;box-shadow:inset 0 0 0 1px #fed7aa"></i>Empty</span></div>
       <span id="mcount">0 words</span>
+    </div>
+  </section>
+</div>
+</div>
+
+<div id="panel-character" role="tabpanel" aria-labelledby="tab-character" hidden>
+<div class="mmain">
+  <form class="panel" id="cform" autocomplete="off" onsubmit="return false">
+    <div class="panel-head">
+      <h2>Character sheet</h2>
+      <span class="meta">Five-angle turnaround prompt</span>
+    </div>
+
+    <fieldset class="chstart">
+      <legend>Start from</legend>
+      <label for="c_desc">Describe the character</label>
+      <textarea id="c_desc" rows="3" placeholder="A weathered airship captain in her fifties, long red coat, brass goggles"></textarea>
+      <div style="margin-top:12px">
+        <label>Or add a photo of the subject</label>
+        <div class="drop" id="cdrop" tabindex="0" role="button" aria-label="Choose a photo"></div>
+        <input type="file" id="cfile" accept="image/png,image/jpeg,image/webp" hidden>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn primary" id="cfill">Fill fields</button>
+        <span class="status-line" id="cstatus" aria-live="polite"></span>
+      </div>
+      <div class="hint">Uses the model and access key from the Image brief tab.</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Character</legend>
+      <div class="grid">
+        <div class="full"><label for="c_subject">Subject</label><input type="text" id="c_subject" data-c="subject" placeholder="A tall adult man with an athletic build"></div>
+        <div><label for="c_hair">Hair</label><input type="text" id="c_hair" data-c="hair" placeholder="Short black hair, swept back"></div>
+        <div><label for="c_face">Face and skin</label><input type="text" id="c_face" data-c="face" placeholder="Olive skin, strong jaw, light stubble"></div>
+        <div><label for="c_top">Top or jacket</label><input type="text" id="c_top" data-c="top" placeholder="Charcoal leather jacket"></div>
+        <div><label for="c_neckwear">Neckwear and accessories</label><input type="text" id="c_neckwear" data-c="neckwear" placeholder="Silver chain, wool scarf"></div>
+        <div><label for="c_gloves">Gloves or handwear</label><input type="text" id="c_gloves" data-c="gloves" placeholder="Black fingerless gloves"></div>
+        <div><label for="c_belt">Belt and waist</label><input type="text" id="c_belt" data-c="belt" placeholder="Brown belt with a brass buckle"></div>
+        <div><label for="c_bottoms">Pants or bottoms</label><input type="text" id="c_bottoms" data-c="bottoms" placeholder="Slim dark jeans"></div>
+        <div><label for="c_footwear">Footwear</label><input type="text" id="c_footwear" data-c="footwear" placeholder="Worn leather boots"></div>
+        <div class="full"><label for="c_bg">Background color</label><input type="text" id="c_bg" data-c="bg" placeholder="dark gray"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Saved characters</legend>
+      <div class="chsave">
+        <input type="text" id="c_name" placeholder="Name this character" aria-label="Character name">
+        <button type="button" class="btn" id="csave">Save character</button>
+      </div>
+      <div class="chrow" id="csaved" role="group" aria-label="Saved characters"></div>
+    </fieldset>
+  </form>
+
+  <section class="panel preview" aria-label="Character sheet prompt preview">
+    <div class="panel-head">
+      <div class="tabs" role="tablist" id="cTabs" aria-label="Prompt length">
+        <button class="tab" role="tab" aria-selected="true" data-view="full">Full prompt</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="compact">Compact</button>
+      </div>
+      <button type="button" class="btn primary" id="ccopy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy prompt
+      </button>
+    </div>
+    <pre id="cout" aria-live="polite"></pre>
+    <div class="foot">
+      <div class="legend"><span><i style="background:var(--blue-bg);box-shadow:inset 0 0 0 1px #b3d4ff"></i>Your inputs</span><span><i style="background:#fff7ed;box-shadow:inset 0 0 0 1px #fed7aa"></i>Empty</span></div>
+      <span id="ccount">0 words</span>
     </div>
   </section>
 </div>
@@ -910,14 +991,14 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
   /* Copy */
   async function copy(){
-    const motion = appTab === "motion";
-    const txt = motion ? mplain() : plain();
+    const motion = appTab === "motion", chara = appTab === "character";
+    const txt = chara ? cplain() : motion ? mplain() : plain();
     try{ await navigator.clipboard.writeText(txt); }
     catch(e){
       const ta = document.createElement("textarea"); ta.value = txt; ta.style.position="fixed"; ta.style.opacity="0";
       document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
     }
-    toast(motion ? "Motion prompt copied" : "Prompt copied");
+    toast(chara ? "Character prompt copied" : motion ? "Motion prompt copied" : "Prompt copied");
   }
   function toast(msg){
     $("#toastText").textContent = msg; const t = $("#toast");
@@ -1025,27 +1106,37 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   document.addEventListener("paste", e => {
     const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith("image/"));
     if(!item) return;
-    e.preventDefault(); setSrc("image"); takeImage(item.getAsFile());
+    e.preventDefault();
+    if(appTab === "character"){ takeCharImage(item.getAsFile()); return; }
+    setSrc("image"); takeImage(item.getAsFile());
   });
 
-  function takeImage(f){
-    if(!/^image\/(png|jpeg|webp|gif)$/.test(f.type)){ setStatus("Use a PNG, JPEG, WebP, or GIF image.", true); return; }
+  /* Shared by both drop zones: validate, resize to 1600px JPEG, return a data URL. */
+  function resizeImage(f, ok, fail){
+    if(!/^image\/(png|jpeg|webp|gif)$/.test(f.type)){ fail("Use a PNG, JPEG, or WebP image."); return; }
     const img = new Image(), url = URL.createObjectURL(f);
     img.onload = () => {
       const max = 1600, scale = Math.min(1, max / Math.max(img.width, img.height));
       const c = document.createElement("canvas");
       c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
       const ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
-      an.image = c.toDataURL("image/jpeg", 0.86);
+      const data = c.toDataURL("image/jpeg", 0.86);
       URL.revokeObjectURL(url);
+      ok(data);
+    };
+    img.onerror = () => fail("That image couldn't be read.");
+    img.src = url;
+  }
+
+  function takeImage(f){
+    resizeImage(f, data => {
+      an.image = data;
       drop.innerHTML = "";
       const pv = document.createElement("img"); pv.src = an.image; pv.alt = "Image to analyze";
       const clr = document.createElement("button"); clr.type = "button"; clr.className = "btn clear"; clr.textContent = "Remove";
       clr.onclick = e => { e.stopPropagation(); an.image = ""; drop.innerHTML = '<div><strong>Drop an image</strong>, paste one, or click to choose<br><span class="status-line">PNG, JPEG, or WebP. Large images are resized.</span></div>'; };
       drop.append(pv, clr); setStatus("");
-    };
-    img.onerror = () => setStatus("That image couldn't be read.", true);
-    img.src = url;
+    }, msg => setStatus(msg, true));
   }
 
   /* Run analysis */
@@ -1537,9 +1628,10 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
       if(on && focus) b.focus();
     });
-    $("#panel-image").hidden = t !== "image"; $("#panel-motion").hidden = t !== "motion";
+    $("#panel-image").hidden = t !== "image"; $("#panel-motion").hidden = t !== "motion"; $("#panel-character").hidden = t !== "character";
     try{ localStorage.setItem(APPTAB_KEY, t); }catch(e){}
     if(t === "motion") mrender();
+    if(t === "character") crender();
   }
   (function(){
     const tabs = [...document.querySelectorAll("#appTabs .apptab")];
@@ -1645,9 +1737,169 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   document.addEventListener("focusin", e => { if(e.target.matches && e.target.matches(typingSel) && e.target.closest("form")) document.body.classList.add("typing"); });
   document.addEventListener("focusout", () => document.body.classList.remove("typing"));
 
+
+  /* ===== Character sheet ===== */
+  const CDRAFT = "promptBuilder.character.draft.v1", CSAVED = "promptBuilder.character.saved.v1", C_IMG_MAX = 1_500_000;
+  const CFIELDS = ["subject","hair","face","top","neckwear","gloves","belt","bottoms","footwear","bg"];
+  const CDEF = {subject:"",hair:"",face:"",top:"",neckwear:"",gloves:"",belt:"",bottoms:"",footwear:"",bg:"dark gray",desc:"",hasPhoto:false};
+  let cs = Object.assign({}, CDEF), cimage = "", cview = "full", cbusy = false;
+  let csaved = [];
+  try{ Object.assign(cs, JSON.parse(localStorage.getItem(CDRAFT)) || {}); cimage = cs.image || ""; delete cs.image; }catch(e){}
+  try{ const a = JSON.parse(localStorage.getItem(CSAVED)); if(Array.isArray(a)) csaved = a.filter(x => x && x.name && x.data); }catch(e){}
+  function saveDraft(){
+    const o = Object.assign({}, cs);
+    if(cimage && cimage.length <= C_IMG_MAX) o.image = cimage;
+    try{ localStorage.setItem(CDRAFT, JSON.stringify(o)); }catch(e){}
+  }
+  function saveList(){ try{ localStorage.setItem(CSAVED, JSON.stringify(csaved)); }catch(e){ cstatus("Couldn't save in this browser.", true); } }
+  function cstatus(msg, err){ const el = $("#cstatus"); el.textContent = msg || ""; el.classList.toggle("err", !!err); }
+
+  function cjoin(items){
+    if(items.length <= 1) return items[0] || "";
+    if(items.length === 2) return items[0] + " and " + items[1];
+    return items.slice(0, -1).join(", ") + ", and " + items[items.length - 1];
+  }
+  const cv = k => (cs[k] || "").trim();
+
+  function cbuild(){
+    const out = [], T = t => out.push([t, ""]);
+    const V = (val, ph) => out.push(val ? [val, "v"] : ["[" + ph + "]", "e"]);
+    const bg = cv("bg") || "dark gray";
+    const wear = ["top","neckwear","gloves","belt","bottoms","footwear"].map(cv).filter(Boolean);
+    const compact = cview === "compact";
+    const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+    if(!compact){
+      T("A 5-angle character sheet layout of "); V(cv("subject"), "subject description");
+      T(" against a solid "); out.push([bg, "v"]); T(" studio background. The character has ");
+      V(cv("hair"), "hair style and color"); T(", "); V(cv("face"), "face, skin and facial features");
+      if(wear.length){
+        T(", and is wearing ");
+        wear.forEach((w, i) => { if(i){ T(wear.length === 2 ? " and " : i === wear.length - 1 ? ", and " : ", "); } out.push([w, "v"]); });
+      }
+      T(".\n");
+      T("The image consists of five distinct panels arranged in a clean character turnaround sheet format:\n");
+      T("1. Panel 1 (Left): Waist-up frontal shot showcasing outfit details, accessories, and expression.\n");
+      T("2. Panel 2 (Center-Left): Full-body front-facing view showing complete outfit proportions and stance.\n");
+      T("3. Panel 3 (Center-Right): Full-body rear view displaying the back profile of the clothing, hair, and footwear.\n");
+      T("4. Panel 4 (Top Right): Three-quarter angle head-and-shoulders portrait highlighting facial structure and hairstyle.\n");
+      T("5. Panel 5 (Bottom Right): Close-up profile portrait focusing on facial features and neck accessories from a side perspective.\n");
+      T("Consistent character features, color palette, lighting, and wardrobe details across all five views, shot with soft studio lighting and neutral shadows.");
+    } else {
+      T("5-angle character turnaround sheet of "); V(cv("subject"), "subject description");
+      T(" on a solid "); out.push([bg, "v"]); T(" studio background. "); V(cap(cv("hair")), "hair"); T(", "); V(cv("face"), "face and skin");
+      if(wear.length){ T(", wearing "); wear.forEach((w, i) => { if(i){ T(wear.length === 2 ? " and " : i === wear.length - 1 ? ", and " : ", "); } out.push([w, "v"]); }); }
+      T(". Five panels: waist-up front shot, full-body front, full-body rear, three-quarter head-and-shoulders portrait, close-up side profile. Same features, palette, lighting and wardrobe in every view, soft studio lighting, neutral shadows.");
+    }
+    if(cs.hasPhoto) T("\nMatch the face, build and wardrobe of the person in the attached reference image.");
+    return out;
+  }
+  function cplain(){ return cbuild().map(x => x[0]).join("").trim(); }
+  function crender(){
+    const segs = cbuild();
+    $("#cout").innerHTML = segs.map(([t, k]) => k ? '<span class="' + k + '">' + esc(t) + '</span>' : esc(t)).join("");
+    const words = cplain().split(/\s+/).filter(Boolean).length;
+    const empty = segs.filter(x => x[1] === "e").length;
+    $("#ccount").textContent = words + " words" + (empty ? " · " + empty + " empty" : "");
+  }
+  function cpaintFields(){
+    document.querySelectorAll("[data-c]").forEach(i => { i.value = cs[i.dataset.c] || ""; });
+    $("#c_desc").value = cs.desc || "";
+  }
+  function cchange(){ saveDraft(); crender(); }
+  document.querySelectorAll("[data-c]").forEach(i => i.addEventListener("input", () => { cs[i.dataset.c] = i.value; cchange(); }));
+  $("#c_desc").addEventListener("input", e => { cs.desc = e.target.value; saveDraft(); });
+  document.querySelectorAll("#cTabs .tab").forEach(t => t.onclick = () => {
+    cview = t.dataset.view;
+    document.querySelectorAll("#cTabs .tab").forEach(x => x.setAttribute("aria-selected", x === t)); crender();
+  });
+  $("#ccopy").onclick = copy;
+
+  /* Photo */
+  const cdrop = $("#cdrop"), cfile = $("#cfile");
+  const CDROP_EMPTY = '<div><strong>Drop a photo</strong>, paste one, or click to choose<br><span class="status-line">PNG, JPEG, or WebP. Large images are resized.</span></div>';
+  function paintCDrop(){
+    cdrop.innerHTML = "";
+    if(!cimage && !cs.hasPhoto){ cdrop.innerHTML = CDROP_EMPTY; return; }
+    if(cimage){
+      const pv = document.createElement("img"); pv.src = cimage; pv.alt = "Reference photo of the subject";
+      cdrop.append(pv);
+    } else {
+      const m = document.createElement("div"); m.innerHTML = '<strong>Photo used</strong><br><span class="status-line">Too large to keep. Add it again to refill the fields.</span>';
+      cdrop.append(m);
+    }
+    const clr = document.createElement("button"); clr.type = "button"; clr.className = "btn clear"; clr.textContent = "Remove";
+    clr.onclick = e => { e.stopPropagation(); cimage = ""; cs.hasPhoto = false; paintCDrop(); cchange(); };
+    cdrop.append(clr);
+  }
+  function takeCharImage(f){
+    resizeImage(f, data => { cimage = data; cs.hasPhoto = true; paintCDrop(); cstatus(""); cchange(); }, msg => cstatus(msg, true));
+  }
+  cdrop.onclick = e => { if(!e.target.closest(".clear")) cfile.click(); };
+  cdrop.onkeydown = e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); cfile.click(); } };
+  cfile.onchange = () => { if(cfile.files[0]) takeCharImage(cfile.files[0]); cfile.value = ""; };
+  ["dragenter","dragover"].forEach(ev => cdrop.addEventListener(ev, e => { e.preventDefault(); cdrop.classList.add("over"); }));
+  ["dragleave","drop"].forEach(ev => cdrop.addEventListener(ev, e => { e.preventDefault(); cdrop.classList.remove("over"); }));
+  cdrop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if(f) takeCharImage(f); });
+
+  /* Fill fields from description and/or photo */
+  $("#cfill").onclick = async () => {
+    if(cbusy) return;
+    const desc = $("#c_desc").value.trim();
+    if(!desc && !cimage){ $("#c_desc").focus(); cstatus("Describe the character or add a photo.", true); return; }
+    if(an.config?.authRequired && !$("#anKey").value.trim()){ cstatus("Add the access key on the Image brief tab.", true); return; }
+    cbusy = true;
+    const btn = $("#cfill"), started = Date.now();
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Filling';
+    const tick = setInterval(() => cstatus("Working… " + Math.round((Date.now() - started) / 1000) + "s"), 500);
+    try{
+      const r = await fetch("/api/character", {
+        method:"POST",
+        headers:{ "content-type":"application/json", "x-access-key": $("#anKey").value.trim() },
+        body: JSON.stringify({ provider: $("#anProvider").value, description: desc, image: cimage })
+      });
+      const data = await r.json().catch(() => ({ error: "The server returned an unreadable response." }));
+      if(!r.ok) throw new Error(data.error || ("Request failed with " + r.status));
+      CFIELDS.forEach(k => { if(k !== "bg" && typeof data.fields[k] === "string") cs[k] = data.fields[k]; });
+      cpaintFields(); cchange();
+      cstatus(data.meta.provider + " · " + data.meta.model + " · " + data.meta.seconds + "s");
+    }catch(e){
+      cstatus(e.message, true);
+    }finally{
+      clearInterval(tick); cbusy = false; btn.disabled = false; btn.textContent = "Fill fields";
+    }
+  };
+
+  /* Saved characters */
+  function renderSaved(){
+    const row = $("#csaved"); row.innerHTML = "";
+    csaved.forEach((c, i) => {
+      const w = el("span", "chwrap");
+      const b = el("button", "chip", c.name); b.type = "button";
+      b.onclick = () => {
+        cs = Object.assign({}, CDEF, c.data); cimage = c.image || ""; cs.hasPhoto = !!(c.data && c.data.hasPhoto);
+        cpaintFields(); paintCDrop(); cchange(); toast("Loaded " + c.name);
+      };
+      const x = el("button", "chip-x", "×"); x.type = "button"; x.setAttribute("aria-label", "Delete " + c.name); x.title = "Delete";
+      x.onclick = () => { csaved.splice(i, 1); saveList(); renderSaved(); };
+      w.append(b, x); row.append(w);
+    });
+  }
+  $("#csave").onclick = () => {
+    const name = $("#c_name").value.trim();
+    if(!name){ $("#c_name").focus(); cstatus("Name the character first.", true); return; }
+    const data = Object.assign({}, cs); delete data.desc;
+    const rec = { name, data };
+    if(cimage && cimage.length <= C_IMG_MAX) rec.image = cimage;
+    const at = csaved.findIndex(c => c.name.toLowerCase() === name.toLowerCase());
+    if(at >= 0) csaved[at] = rec; else csaved.push(rec);
+    saveList(); renderSaved(); $("#c_name").value = ""; cstatus(""); toast("Saved " + name);
+  };
+  $("#c_name").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); $("#csave").click(); } });
+  cpaintFields(); paintCDrop(); renderSaved(); crender();
+
   buildStyleChips(); buildAdj(); buildZones(); renderBrands(); selectBrand(current);
   mReady = true;
-  let savedTab = "image"; try{ savedTab = localStorage.getItem(APPTAB_KEY) === "motion" ? "motion" : "image"; }catch(e){}
+  let savedTab = "image"; try{ savedTab = ["motion","character"].includes(localStorage.getItem(APPTAB_KEY)) ? localStorage.getItem(APPTAB_KEY) : "image"; }catch(e){}
   setAppTab(savedTab); mrender();
   loadConfig();
 })();
