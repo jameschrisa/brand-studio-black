@@ -1,0 +1,56 @@
+/* Camera tab */
+#camera3dRoot{max-width:1240px;margin:0 auto;padding:24px}
+.c3 .panel-head .meta{font-family:var(--mono);font-size:12px;color:var(--fg-2)}
+.c3-body{padding:16px 20px 20px;display:flex;flex-direction:column;gap:16px}
+.c3-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:12px;align-items:end}
+.c3-controls label{margin-bottom:6px}
+.c3-btns{display:flex;gap:8px}
+.c3-btns .btn{min-width:72px;justify-content:center}
+.c3 .btn:disabled{opacity:.45;cursor:default}
+.c3 .btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
+.c3 .btn.primary:disabled:hover{border-color:var(--fg)}
+
+.c3-stage{position:relative;width:100%;aspect-ratio:16/10;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f1eee8;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;outline-offset:2px}
+.c3-stage.is-drag{cursor:grabbing}
+.c3-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+.c3-inset{position:absolute;top:12px;right:12px;width:38%;min-width:120px;border-radius:6px;box-shadow:0 0 0 3px #fff,0 0 0 4px rgba(0,0,0,.14),0 8px 24px 3px rgba(0,0,0,.2);pointer-events:none}
+.c3-view{position:relative;width:100%;aspect-ratio:16/9;border-radius:6px;overflow:hidden}
+.c3-thirds{position:absolute;inset:0;width:100%;height:100%}
+.c3-thirds path{fill:none;stroke:rgba(255,255,255,.7);stroke-width:1;filter:drop-shadow(0 0 1px rgba(0,0,0,.45))}
+.c3-fade{position:absolute;inset:0;background:#000;opacity:0}
+.c3-blur{position:absolute;inset:0}
+.c3-tilt{position:absolute;inset:0;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);-webkit-mask-image:linear-gradient(#000 0,transparent 30%,transparent 62%,#000 100%);mask-image:linear-gradient(#000 0,transparent 30%,transparent 62%,#000 100%)}
+.c3-size{position:absolute;left:6px;bottom:6px;max-width:calc(100% - 12px);background:#000;color:#fff;font-size:11px;line-height:1;padding:5px 7px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c3-hintbar{position:absolute;left:10px;bottom:10px;max-width:calc(62% - 20px);font-size:12px;color:var(--fg-2);background:rgba(255,255,255,.85);border:1px solid var(--line);padding:5px 9px;border-radius:6px;pointer-events:none;line-height:1.35}
+
+.c3-zoom{display:flex;align-items:center;gap:10px}
+.c3-zlabel{font-size:13px;color:var(--fg-2);min-width:36px}
+.c3-step{width:34px;padding:0;justify-content:center;font-size:18px;line-height:1}
+.c3-zoom input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:34px;margin:0;padding:0;border:0;background:transparent;cursor:ew-resize;touch-action:pan-y}
+.c3-zoom input[type=range]::-webkit-slider-runnable-track{height:14px;border-radius:7px;border:1px solid var(--line-2);background:repeating-linear-gradient(90deg,var(--line-2) 0 1px,transparent 1px 9px),var(--bg-2)}
+.c3-zoom input[type=range]::-moz-range-track{height:14px;border-radius:7px;border:1px solid var(--line-2);background:repeating-linear-gradient(90deg,var(--line-2) 0 1px,transparent 1px 9px),var(--bg-2)}
+.c3-zoom input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:32px;margin-top:-10px;border-radius:7px;border:0;background:linear-gradient(90deg,#000 0 42%,#E5B76A 42% 58%,#000 58%);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.c3-zoom input[type=range]::-moz-range-thumb{width:26px;height:32px;border-radius:7px;border:0;background:linear-gradient(90deg,#000 0 42%,#E5B76A 42% 58%,#000 58%);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+
+.c3-info{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.c3-hints p{margin:0 0 8px;font-size:13px;color:var(--fg-2);line-height:1.5}
+.c3-hints strong{color:var(--fg);font-weight:600}
+.c3-out textarea{width:100%;font-family:var(--mono);font-size:12px;line-height:1.5;min-height:112px}
+.c3-copyrow{margin-top:8px}
+.c3-fail{padding:20px;margin:0;color:var(--fg-2)}
+
+@media (max-width:920px){
+  .c3-controls{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .c3-btns{grid-column:1/-1}
+  .c3-info{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  #camera3dRoot{padding:16px}
+  .c3-body{padding:14px 14px 16px}
+  .c3-controls{grid-template-columns:1fr 1fr}
+  .c3-controls>div:nth-child(3){grid-column:1/-1}
+  .c3-inset{width:46%;min-width:0;top:8px;right:8px}
+  .c3-size{font-size:9px;padding:3px 5px;left:4px;bottom:4px}
+  .c3-hintbar{display:none}
+}

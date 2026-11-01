@@ -1,0 +1,58 @@
+.gr-main{max-width:1240px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
+.gr-left{position:sticky;top:76px;min-width:0}
+.gr-col{display:grid;gap:24px;min-width:0}
+
+.gr-stagewrap{padding:16px;background:var(--bg-2);display:flex;justify-content:center;border-bottom:1px solid var(--line)}
+.gr-stagewrap.over{outline:2px dashed var(--fg);outline-offset:-6px}
+.gr-stage{position:relative;line-height:0;border-radius:8px;overflow:hidden;touch-action:pan-y;cursor:ew-resize;user-select:none;-webkit-user-select:none;background:var(--line);box-shadow:0 0 0 1px var(--line)}
+.gr-stage canvas{display:block;width:100%;height:auto}
+.gr-tag{position:absolute;top:10px;font:500 11px/1 var(--mono);background:rgba(0,0,0,.62);color:#fff;padding:5px 7px;border-radius:4px;pointer-events:none;transition:opacity .15s}
+.gr-tag.l{left:10px}.gr-tag.r{right:10px}
+.gr-stage.no-l .gr-tag.l,.gr-stage.no-r .gr-tag.r{opacity:0}
+.gr-split{position:absolute;top:0;bottom:0;width:0;left:50%;outline:none}
+.gr-split::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.gr-grip{position:absolute;top:50%;left:0;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;background:#fff;color:var(--fg);border:1px solid var(--line-2);box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
+.gr-grip svg{width:18px;height:18px}
+.gr-split:focus-visible .gr-grip{outline:2px solid var(--blue);outline-offset:2px}
+.gr-busy{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);font:500 12px var(--mono);color:var(--fg-2)}
+
+.gr-ctl{padding:14px 20px 18px;display:grid;gap:12px}
+.gr-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.gr-hint{font-size:12px;color:var(--fg-3)}
+.gr-hint.err{color:#b42318}
+.gr-int{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+.gr-int label{margin:0}
+.gr-int output{font:13px var(--mono);min-width:40px;text-align:right}
+.gr-int input[type=range]{width:100%;margin:0;height:20px;accent-color:#000;cursor:pointer}
+
+.gr-filters{padding:14px 20px;border-bottom:1px solid var(--line)}
+.gr-scroll{padding:6px 20px 20px}
+.gr-group h3{font-size:13px;font-weight:600;margin:16px 0 10px;letter-spacing:-.005em}
+.gr-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.gr-card{display:flex;flex-direction:column;align-items:stretch;gap:6px;text-align:left;padding:6px 6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);cursor:pointer;color:var(--fg);min-width:0;transition:border-color .15s}
+.gr-card:hover{border-color:var(--line-2)}
+.gr-card[aria-pressed="true"]{border-color:var(--fg);box-shadow:0 0 0 1px var(--fg)}
+.gr-th{position:relative;display:block;aspect-ratio:3/2;border-radius:6px;overflow:hidden;background:var(--bg-2);line-height:0}
+.gr-th canvas{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.gr-tick{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--fg);color:#fff;display:none;align-items:center;justify-content:center}
+.gr-tick svg{width:12px;height:12px}
+.gr-card[aria-pressed="true"] .gr-tick{display:flex}
+.gr-cn{font-size:13px;font-weight:600;padding:0 4px;line-height:1.25}
+.gr-cd{font-size:11.5px;line-height:1.4;color:var(--fg-2);padding:0 4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+.gr-subj{padding:14px 20px 0}
+#grOut{max-height:none;min-height:96px}
+
+@media (min-width:901px){.gr-scroll{max-height:640px;overflow:auto}}
+@media (max-width:900px){.gr-main{grid-template-columns:minmax(0,1fr)}.gr-left{position:static}}
+@media (max-width:560px){
+  .gr-main{padding:16px;gap:16px}
+  .gr-col{gap:16px}
+  .gr-stagewrap{padding:10px}
+  .gr-ctl,.gr-filters{padding-left:14px;padding-right:14px}
+  .gr-scroll{padding:4px 14px 16px}
+  .gr-subj{padding:14px 14px 0}
+  .gr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gr-int{grid-template-columns:auto 1fr auto;gap:8px}
+}
+@media (max-width:1100px) and (min-width:901px){.gr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

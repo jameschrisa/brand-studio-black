@@ -10,6 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script src="camera-data.js"></script>
 <script src="caption-data.js"></script>
+<link rel="stylesheet" href="camera3d.css">
+<script type="module" src="camera3d.js"></script>
+<link rel="stylesheet" href="grade.css">
+<script src="grade-data.js"></script>
+<script defer src="grade.js"></script>
 <link rel="stylesheet" href="caption-preview.css">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -172,7 +177,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   pre{max-height:none}
   .mobile-copy{display:flex;position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;justify-content:center;height:44px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
   body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
-  body.typing .mobile-copy{display:none}
+  body.typing .mobile-copy,body[data-app]:not([data-app="image"]) .mobile-copy{display:none}
   .toast{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:560px){
@@ -207,8 +212,9 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
 /* App tabs */
 .apptabs{max-width:1240px;margin:0 auto;padding:20px 24px 0}
-.apptabs .tl{display:flex;gap:4px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-.apptab{height:34px;padding:0 14px;border:0;border-radius:8px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:14px;font-weight:500}
+.apptabs .tl{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.apptabs .tl::-webkit-scrollbar{display:none}
+.apptab{flex:none;white-space:nowrap;height:34px;padding:0 14px;border:0;border-radius:8px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:14px;font-weight:500}
 .apptab:hover{color:var(--fg)}
 .apptab[aria-selected="true"]{background:var(--fg);color:#fff}
 /* Keyboard focus inverts too; dark gray keeps it distinct from the selected tab. */
@@ -299,6 +305,8 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     <button type="button" class="apptab" role="tab" id="tab-image" aria-controls="panel-image" aria-selected="true" data-app="image">Image brief</button>
     <button type="button" class="apptab" role="tab" id="tab-motion" aria-controls="panel-motion" aria-selected="false" tabindex="-1" data-app="motion">Motion &amp; captions</button>
     <button type="button" class="apptab" role="tab" id="tab-character" aria-controls="panel-character" aria-selected="false" tabindex="-1" data-app="character">Character sheet</button>
+    <button type="button" class="apptab" role="tab" id="tab-camera" aria-controls="panel-camera" aria-selected="false" tabindex="-1" data-app="camera">Camera</button>
+    <button type="button" class="apptab" role="tab" id="tab-grade" aria-controls="panel-grade" aria-selected="false" tabindex="-1" data-app="grade">Color grade</button>
   </div>
 </div>
 
@@ -598,6 +606,9 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   </section>
 </div>
 </div>
+
+<div id="panel-camera" role="tabpanel" aria-labelledby="tab-camera" hidden><div id="camera3dRoot"></div></div>
+<div id="panel-grade" role="tabpanel" aria-labelledby="tab-grade" hidden><div id="gradeRoot"></div></div>
 
 <div id="panel-character" role="tabpanel" aria-labelledby="tab-character" hidden>
 <div class="mmain">
@@ -1622,16 +1633,17 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
   /* App tabs */
   function setAppTab(t, focus){
-    appTab = t;
+    appTab = t; document.body.dataset.app = t;
     document.querySelectorAll("#appTabs .apptab").forEach(b => {
       const on = b.dataset.app === t;
       b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
       if(on && focus) b.focus();
     });
-    $("#panel-image").hidden = t !== "image"; $("#panel-motion").hidden = t !== "motion"; $("#panel-character").hidden = t !== "character";
+    $("#panel-image").hidden = t !== "image"; $("#panel-motion").hidden = t !== "motion"; $("#panel-character").hidden = t !== "character"; $("#panel-camera").hidden = t !== "camera"; $("#panel-grade").hidden = t !== "grade";
     try{ localStorage.setItem(APPTAB_KEY, t); }catch(e){}
     if(t === "motion") mrender();
     if(t === "character") crender();
+    document.dispatchEvent(new CustomEvent("apptab", {detail: t}));
   }
   (function(){
     const tabs = [...document.querySelectorAll("#appTabs .apptab")];
@@ -1899,7 +1911,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
   buildStyleChips(); buildAdj(); buildZones(); renderBrands(); selectBrand(current);
   mReady = true;
-  let savedTab = "image"; try{ savedTab = ["motion","character"].includes(localStorage.getItem(APPTAB_KEY)) ? localStorage.getItem(APPTAB_KEY) : "image"; }catch(e){}
+  let savedTab = "image"; try{ savedTab = ["motion","character","camera","grade"].includes(localStorage.getItem(APPTAB_KEY)) ? localStorage.getItem(APPTAB_KEY) : "image"; }catch(e){}
   setAppTab(savedTab); mrender();
   loadConfig();
 })();
