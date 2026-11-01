@@ -6,7 +6,7 @@
 .c3-controls label{margin-bottom:6px}
 .c3-btns{display:flex;gap:8px}
 .c3-btns .btn{min-width:72px;justify-content:center}
-.c3 .btn:disabled{opacity:.45;cursor:default}
+.c3 .btn:disabled{opacity:.45;cursor:not-allowed}
 .c3 .btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
 .c3 .btn.primary:disabled:hover{border-color:var(--fg)}
 
@@ -36,7 +36,7 @@
 .c3-info{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
 .c3-hints p{margin:0 0 8px;font-size:13px;color:var(--fg-2);line-height:1.5}
 .c3-hints strong{color:var(--fg);font-weight:600}
-.c3-out textarea{width:100%;font-family:var(--mono);font-size:12px;line-height:1.5;min-height:112px}
+.c3-out textarea{width:100%;font-family:var(--mono);font-size:12.5px;line-height:1.7;min-height:112px;padding:20px;height:auto;color:var(--fg-2);background:var(--bg-2);border:1px solid var(--line);border-radius:10px;resize:vertical}
 .c3-copyrow{margin-top:8px}
 .c3-fail{padding:20px;margin:0;color:var(--fg-2)}
 

@@ -305,7 +305,7 @@
   // Category chips
   var chipList = [{ id: "all", name: "All" }].concat(CATS);
   el.chips.innerHTML = chipList.map(function (c) {
-    return '<button type="button" class="chip" data-v="' + c.id + '" aria-pressed="' + (c.id === state.cat) + '">' + c.name + "</button>";
+    return '<button type="button" class="chip" data-v="' + c.id + '" aria-pressed="' + (c.id === state.cat) + '">' + c.name.replace(/ Styles$/, "") + "</button>";
   }).join("");
 
   // Preset grid
@@ -537,6 +537,13 @@
     setTimeout(function () { if (state.preset === id) renderMain(); }, 0);
   }
 
+  function syncFade() {
+    var g = el.grid;
+    g.classList.toggle("at-end", g.scrollHeight - g.scrollTop - g.clientHeight < 4);
+  }
+  el.grid.addEventListener("scroll", syncFade, { passive: true });
+  window.addEventListener("resize", syncFade);
+  setTimeout(syncFade, 0);
   el.grid.addEventListener("click", function (e) {
     var b = e.target.closest(".gr-card");
     if (b) selectPreset(b.dataset.id);
@@ -547,6 +554,7 @@
     state.cat = b.dataset.v;
     syncFilter();
     el.grid.scrollTop = 0;
+    syncFade();
     if (ref) queueThumbs();
   });
   el.seg.addEventListener("click", function (e) {

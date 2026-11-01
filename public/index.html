@@ -20,7 +20,7 @@
 <style>
 :root{
   --bg:#ffffff; --bg-2:#fafafa; --line:#ebebeb; --line-2:#d9d9d9;
-  --fg:#000000; --fg-2:#4d4d4d; --fg-3:#8f8f8f;
+  --fg:#000000; --fg-2:#4d4d4d; --fg-3:#6b6b6b;
   --blue:#0070f3; --blue-bg:#eef5ff; --green:#0a7d33;
   --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -29,8 +29,15 @@
 }
 *,*::before,*::after{box-sizing:inherit}
 [hidden]{display:none !important}
-::selection{background:rgba(0,112,243,.18);color:var(--fg)}
-input,textarea{caret-color:var(--blue)}
+::selection{background:rgba(229,183,106,.4);color:inherit}
+:root{accent-color:var(--fg)}
+input,textarea{caret-color:var(--fg)}
+a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;transition:text-decoration-color .15s}
+a:hover{text-decoration-color:var(--fg-2)}
+.signout,.signout:hover{text-decoration:none}
+pre,.pgrid,.gr-scroll,textarea,.c3-hints{scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.form-hint{margin:0;padding:14px 20px 0;font-size:13px;color:var(--fg-2)}
+.opt-tag{color:var(--fg-3)}
 html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
@@ -95,8 +102,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-
 .zone rect.text{fill:var(--line-2)}
 .zone button[aria-pressed="true"] rect.text{fill:var(--blue)}
 
-.seg{display:inline-flex;flex-wrap:wrap;max-width:100%;border:1px solid var(--line-2);border-radius:8px;padding:2px;gap:2px;background:var(--bg-2)}
-.seg button{height:26px;padding:0 10px;white-space:nowrap;border:0;border-radius:6px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:12px}
+.seg{display:inline-flex;flex-wrap:wrap;max-width:100%;border:1px solid var(--line-2);border-radius:10px;padding:3px;gap:3px;background:var(--bg-2)}
+.seg button{height:28px;padding:0 12px;white-space:nowrap;border:0;border-radius:6px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:12px}
 .seg button:hover{color:var(--fg)}
 .seg button[aria-pressed="true"]{background:var(--fg);color:#fff;box-shadow:none}
 .legend-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:14px;clear:both}
@@ -119,7 +126,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--fg);box-
 .btn svg{width:14px;height:14px}
 #csave{white-space:nowrap}
 
-.preview{position:sticky;top:76px}
+.preview{position:sticky;top:72px;display:flex;flex-direction:column;max-height:calc(100vh - 88px)}
+.preview pre{flex:1 1 auto;min-height:0;max-height:none}
+.preview .panel-head,.preview .foot{flex:none}
 .tabs{display:flex;gap:2px}
 .tab{height:28px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:var(--fg-2);cursor:pointer;font-size:13px}
 .tab:hover{color:var(--fg)}
@@ -128,8 +137,8 @@ pre{margin:0;padding:20px;font-family:var(--mono);font-size:12.5px;line-height:1
 pre .h{color:var(--fg);font-weight:500}
 pre .v{color:var(--fg);background:var(--blue-bg);border-radius:3px;padding:0 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
-.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--fg-3);font-family:var(--mono)}
-.legend{display:flex;gap:14px;align-items:center}
+.foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:12px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--fg-3);font-family:var(--mono)}
+.legend{display:flex;gap:14px;align-items:center;white-space:nowrap}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 
 .toast{max-width:calc(100vw - 32px);position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--fg);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;transition:opacity .2s,transform .2s;pointer-events:none;z-index:20;display:flex;gap:8px;align-items:center}
@@ -173,7 +182,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
 @media (max-width:920px){
   main{grid-template-columns:1fr}
-  .preview{position:static}
+  .preview{position:static;max-height:none;display:block}
   pre{max-height:none}
   .mobile-copy{display:flex;position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;justify-content:center;height:44px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
   body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
@@ -261,7 +270,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 .pbox{margin-top:10px;font-family:var(--mono);font-size:12px;line-height:1.5;background:var(--bg-2);color:var(--fg-2);min-height:62px}
 .pnone{font-size:12px;color:var(--fg-3);padding:8px 2px}
 .src-credit{margin-top:6px}
-.src-credit a,.pnote a{color:var(--blue)}
+.src-credit a,.pnote a{color:var(--fg)}
 .pnote{font-size:12px;color:#b45309}
 .chrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .chwrap{display:inline-flex;align-items:center}
@@ -338,7 +347,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
           <input type="file" id="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
         </div>
         <div style="margin-top:12px">
-          <label for="anNotes">Context <span style="color:var(--fg-3)">optional</span></label>
+          <label for="anNotes">Context <span class="opt-tag">optional</span></label>
           <input type="text" id="anNotes" placeholder="e.g. Focus on the new wellness line, not the corporate site">
         </div>
       </div>
@@ -373,6 +382,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       <h2>Brief</h2>
       <span class="meta" id="savedState">Preset</span>
     </div>
+    <p class="form-hint">Fill what you know. Anything left empty shows in orange in the prompt.</p>
 
     <fieldset>
       <legend>Brand</legend>
@@ -380,8 +390,8 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
         <div><label for="brandName">Name</label><input type="text" id="brandName" data-k="brandName"></div>
         <div><label for="personality">Personality</label><input type="text" id="personality" data-k="personality" placeholder="3 words"></div>
         <div class="full"><label for="audience">Audience</label><input type="text" id="audience" data-k="audience" placeholder="Who they are and what they care about"></div>
-        <div class="full"><label for="essence">Brand essence <span style="color:var(--fg-3)">optional</span></label><textarea id="essence" data-k="essence" rows="2" placeholder="The core idea and feeling, in 1-2 sentences"></textarea></div>
-        <div class="full"><label for="voice">Brand voice <span style="color:var(--fg-3)">optional</span></label><textarea id="voice" data-k="voice" rows="3" placeholder="How the brand sounds, example phrases, and what it never says"></textarea></div>
+        <div class="full"><label for="essence">Brand essence</label><textarea id="essence" data-k="essence" rows="2" placeholder="The core idea and feeling, in 1-2 sentences"></textarea></div>
+        <div class="full"><label for="voice">Brand voice</label><textarea id="voice" data-k="voice" rows="3" placeholder="How the brand sounds, example phrases, and what it never says"></textarea></div>
       </div>
     </fieldset>
 
@@ -390,12 +400,12 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       <div class="grid">
         <div class="full"><label for="message">Core message</label><textarea id="message" data-k="message" rows="2" placeholder="One sentence"></textarea></div>
         <div class="full" data-gen-wrap="hook">
-          <div class="lrow"><label for="hook">Hook <span style="color:var(--fg-3)">optional</span></label><button type="button" class="btn ghost gen" data-gen="hook" aria-controls="sg_hook">Generate</button></div>
+          <div class="lrow"><label for="hook">Hook</label><button type="button" class="btn ghost gen" data-gen="hook" aria-controls="sg_hook">Generate</button></div>
           <input type="text" id="hook" data-k="hook" placeholder="The opening line for the overlay">
           <div class="sugg" id="sg_hook" hidden></div>
         </div>
         <div class="full" data-gen-wrap="headline">
-          <div class="lrow"><label for="headline">Headline <span style="color:var(--fg-3)">optional</span></label><button type="button" class="btn ghost gen" data-gen="headline" aria-controls="sg_headline">Generate</button></div>
+          <div class="lrow"><label for="headline">Headline</label><button type="button" class="btn ghost gen" data-gen="headline" aria-controls="sg_headline">Generate</button></div>
           <input type="text" id="headline" data-k="headline" placeholder="The overlay title">
           <div class="sugg" id="sg_headline" hidden></div>
         </div>
@@ -435,9 +445,9 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
         </div>
         <div class="full"><label for="palette">Palette</label><input type="text" id="palette" data-k="palette" placeholder="2-3 brand colors + 1 pop accent"></div>
         <div><label for="mood">Mood</label><input type="text" id="mood" data-k="mood"></div>
-        <div><label for="motif">Signature motif <span style="color:var(--fg-3)">optional</span></label><input type="text" id="motif" data-k="motif"></div>
-        <div><label for="typography">Typography <span style="color:var(--fg-3)">optional</span></label><input type="text" id="typography" data-k="typography" placeholder="Typefaces or their character"></div>
-        <div><label for="imagery">Imagery <span style="color:var(--fg-3)">optional</span></label><input type="text" id="imagery" data-k="imagery" placeholder="What photos or illustrations show"></div>
+        <div><label for="motif">Signature motif</label><input type="text" id="motif" data-k="motif"></div>
+        <div><label for="typography">Typography</label><input type="text" id="typography" data-k="typography" placeholder="Typefaces or their character"></div>
+        <div><label for="imagery">Imagery</label><input type="text" id="imagery" data-k="imagery" placeholder="What photos or illustrations show"></div>
         <div class="full"><label for="avoid">Avoid</label><textarea id="avoid" data-k="avoid" rows="2"></textarea><div class="hint">Change this per campaign to steer clear of generic AI looks.</div></div>
       </div>
     </fieldset>
@@ -637,15 +647,15 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     <fieldset>
       <legend>Character</legend>
       <div class="grid">
-        <div class="full"><label for="c_subject">Subject</label><input type="text" id="c_subject" data-c="subject" placeholder="A tall adult man with an athletic build"></div>
-        <div><label for="c_hair">Hair</label><input type="text" id="c_hair" data-c="hair" placeholder="Short black hair, swept back"></div>
-        <div><label for="c_face">Face and skin</label><input type="text" id="c_face" data-c="face" placeholder="Olive skin, strong jaw, light stubble"></div>
-        <div><label for="c_top">Top or jacket</label><input type="text" id="c_top" data-c="top" placeholder="Charcoal leather jacket"></div>
-        <div><label for="c_neckwear">Neckwear and accessories</label><input type="text" id="c_neckwear" data-c="neckwear" placeholder="Silver chain, wool scarf"></div>
-        <div><label for="c_gloves">Gloves or handwear</label><input type="text" id="c_gloves" data-c="gloves" placeholder="Black fingerless gloves"></div>
-        <div><label for="c_belt">Belt and waist</label><input type="text" id="c_belt" data-c="belt" placeholder="Brown belt with a brass buckle"></div>
-        <div><label for="c_bottoms">Pants or bottoms</label><input type="text" id="c_bottoms" data-c="bottoms" placeholder="Slim dark jeans"></div>
-        <div><label for="c_footwear">Footwear</label><input type="text" id="c_footwear" data-c="footwear" placeholder="Worn leather boots"></div>
+        <div class="full"><label for="c_subject">Subject</label><input type="text" id="c_subject" data-c="subject" placeholder="e.g. a tall adult man with an athletic build"></div>
+        <div><label for="c_hair">Hair</label><input type="text" id="c_hair" data-c="hair" placeholder="e.g. short black hair, swept back"></div>
+        <div><label for="c_face">Face and skin</label><input type="text" id="c_face" data-c="face" placeholder="e.g. olive skin, strong jaw, light stubble"></div>
+        <div><label for="c_top">Top or jacket</label><input type="text" id="c_top" data-c="top" placeholder="e.g. charcoal leather jacket"></div>
+        <div><label for="c_neckwear">Neckwear and accessories</label><input type="text" id="c_neckwear" data-c="neckwear" placeholder="e.g. silver chain, wool scarf"></div>
+        <div><label for="c_gloves">Gloves or handwear</label><input type="text" id="c_gloves" data-c="gloves" placeholder="e.g. black fingerless gloves"></div>
+        <div><label for="c_belt">Belt and waist</label><input type="text" id="c_belt" data-c="belt" placeholder="e.g. brown belt with a brass buckle"></div>
+        <div><label for="c_bottoms">Pants or bottoms</label><input type="text" id="c_bottoms" data-c="bottoms" placeholder="e.g. slim dark jeans"></div>
+        <div><label for="c_footwear">Footwear</label><input type="text" id="c_footwear" data-c="footwear" placeholder="e.g. worn leather boots"></div>
         <div class="full"><label for="c_bg">Background color</label><input type="text" id="c_bg" data-c="bg" placeholder="dark gray"></div>
       </div>
     </fieldset>

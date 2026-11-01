@@ -796,6 +796,8 @@ async function init() {
   });
   function refreshPlay() {
     el.play.disabled = !S.moveTitle;
+    el.play.setAttribute('aria-disabled', S.moveTitle ? 'false' : 'true');
+    el.play.title = S.moveTitle ? '' : 'Choose a movement to play';
     el.play.textContent = S.playing ? 'Pause' : 'Play';
     el.play.setAttribute('aria-pressed', S.playing ? 'true' : 'false');
   }
