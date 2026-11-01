@@ -59,11 +59,16 @@ header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop
 .hero p{color:var(--fg-2);margin:0;font-size:15px}
 
 .brands{max-width:1240px;margin:0 auto;padding:24px 24px 0}
-.brand-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.brand-row::-webkit-scrollbar{display:none}
-.brand{flex:0 0 auto;display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);cursor:pointer;color:var(--fg-2);transition:border-color .15s,color .15s,background .15s}
-.brand:hover{border-color:var(--line-2);color:var(--fg)}
-.brand[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:#fff}
+.brand-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bpick{min-width:0}
+.bpick label{display:block;font-size:12px;font-weight:500;color:var(--fg-2);margin:0 0 6px}
+.pick-wrap{position:relative}
+.pick-wrap select{width:100%;height:40px;padding-left:14px;border-radius:10px}
+.pick-wrap .dot{position:absolute;left:14px;top:50%;margin-top:-4px;pointer-events:none;display:none}
+.pick-wrap.active .dot{display:block}
+.pick-wrap.active select{padding-left:32px;background-color:var(--fg);border-color:var(--fg);color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+.pick-wrap.active select option,.pick-wrap.active select optgroup{background:#fff;color:var(--fg)}
+@media(max-width:640px){.brand-pick{grid-template-columns:1fr}}
 .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
 
 main{max-width:1240px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;align-items:start}
@@ -306,7 +311,10 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 </section>
 
 <section class="brands" aria-label="Brand">
-  <div class="brand-row" id="brandRow" role="group"></div>
+  <div class="brand-pick">
+    <div class="bpick"><label for="brandSel">Your brands</label><div class="pick-wrap" id="brandWrap"><span class="dot"></span><select id="brandSel"></select></div></div>
+    <div class="bpick"><label for="tplSel">Templates</label><div class="pick-wrap" id="tplWrap"><span class="dot"></span><select id="tplSel"></select></div></div>
+  </div>
 </section>
 
 <div class="apptabs">
@@ -529,7 +537,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
   <form class="panel" id="mform" autocomplete="off" onsubmit="return false">
     <div class="panel-head">
       <h2>Motion brief</h2>
-      <span class="meta">Brand follows the chips above</span>
+      <span class="meta">Brand follows the brand menu above</span>
     </div>
 
     <fieldset>
@@ -707,6 +715,34 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       rules:["Feature at least two people in genuine, unposed connection: eye contact, touch, shared laughter, or working side by side","Faces and hands are the focal point; any technology stays small and secondary","Natural light, real skin texture, and people of varied ages and backgrounds"],
       copyRule:"Every hook and title speaks to connection, belonging, or a shared moment, and addresses people as \"you\" and \"we\""},
     sunsoul:{label:"Sun & Soul 2027",color:"#e8a33d",brandName:"Sun & Soul 2027",personality:"Warm, curious, coastal",audience:"Health and longevity enthusiasts in San Diego and beyond",message:"",format:"Instagram or TikTok story, 9:16",reaction:"Register or sign up",style:"Cinematic photo",palette:"Sun gold, warm coral, ocean blue, sand",mood:"Golden-hour optimism",motif:"Half-sun",avoid:"Generic yoga silhouettes, spa clichés, stock smiling crowds",zone:"bottom"},
+    tpl_agency:{group:"template",label:"Design Agency",color:"#8c8c73",brandName:"Design Agency",personality:"Exacting, direct, assured",audience:"B2B founders whose company has outgrown its brand and website and who want better-fit clients to take them seriously",message:"",format:"LinkedIn post, 1.91:1",reaction:"Trust the brand",style:"Typography-led editorial layout",palette:"Warm off-white #fafaf9, near black #080807, card black #181715, stone beige #e8e8e3, olive taupe #8c8c73 as the one accent",mood:"Focused, mature, exact",motif:"A visible gap between two blocks, numbered case markers, arrows",avoid:"Logos or brand marks, glossy gradients, stock office photos, 3D blobs, neon accents, design jargon",zone:"left",
+      essence:"A founder-led studio that closes the gap between how good a company is and how credible it looks. Proof and plain talk carry the work.",
+      voice:"Plain business language, founder to founder. Name the problem, state what it costs, show the result. Short declarative lines.",
+      typography:"A confident grotesk sans for large, tightly set headlines, a quieter sans for body, and a small monospace for labels, numbers and metadata. Uppercase labels, arrows and slashes as structure.",
+      imagery:"Large type on plain warm grounds, crisp website and case-study screens in browser frames, black cards holding one result metric",
+      rules:["Type leads: one large headline set tight, with generous margins","Two-tone layout: a warm off-white field with one black card holding the proof point","Small monospace labels and numbers give structure, never decoration"],
+      copyRule:"Speak founder to founder in plain business language. Name the problem and its cost, then the result. No hype words."},
+    tpl_hotel:{group:"template",label:"Hotel Lux",color:"#82847f",brandName:"Hotel Lux",personality:"Serene, refined, place-led",audience:"Affluent travelers who choose remote, private retreats for calm, discretion and a real sense of place",message:"",format:"Instagram feed, 4:5",reaction:"Feel curious and click",style:"Cinematic photo",palette:"Warm parchment #f3eee7, soft stone #e6e2db, warm greige #d5d1c8, sage gray #82847f, charcoal ink #313131",mood:"Quiet, spacious, ceremonial",motif:"Stone, water and horizon lines, a single figure small in a wide landscape",avoid:"Logos or brand marks, crowded pools, champagne and gold clichés, heavy HDR, oversaturated sunsets, sales urgency",zone:"bottom",
+      essence:"Travel as a quiet ritual of place. Space, silence and the landscape do the talking.",
+      voice:"Calm, polished and sparing. A few words that name the place, the season or the ritual. Invitations, never urgency.",
+      typography:"A light, high-contrast serif for headlines in sentence case, paired with a clean humanist sans for small text. Small uppercase labels with wide letter spacing. Light and regular weights only.",
+      imagery:"Wide, calm destination photography: coastlines, desert, terraced hills, stone architecture, still pools. Natural light at dawn or dusk, muted tones, plenty of negative space.",
+      rules:["Landscape or architecture fills the frame. People, if any, are small and unposed","Keep at least a third of the frame as calm negative space for type","One short serif line of copy at most, centered or low in the frame"],
+      copyRule:"Use few words, in sentence case. Name a place, a season or a ritual. Invite, never push. No exclamation marks and no prices."},
+    tpl_shop:{group:"template",label:"Ecom Shop",color:"#811b28",brandName:"Ecom Shop",personality:"Relaxed, polished, active",audience:"People buying premium activewear for training, travel and everyday wear who care about softness, fit and versatility",message:"",format:"Instagram feed, 4:5",reaction:"Feel curious and click",style:"Cinematic photo",palette:"Soft white #f8f8f8, light heather #ededed, muted gray #727272, warm charcoal #333333, deep berry #811b28 used sparingly",mood:"Soft, calm, capable",motif:"Fabric close-ups and easy movement outdoors: a coastal trail, a morning stretch, a travel day",avoid:"Logos or brand marks, sweaty gym intensity, neon colors, heavy filters, crowded collages, discount badges",zone:"bottom",
+      essence:"Performance clothing for the whole day. Soft, capable and easy to live in.",
+      voice:"Calm, warm and direct. Short lines that connect movement, comfort and daily life. Benefit first, no gym bravado.",
+      typography:"A clean grotesk sans throughout: simple restrained headlines, short body copy, title case buttons. No decorative type.",
+      imagery:"Natural-light lifestyle photos of people moving and resting in the clothes outdoors, coastal and mountain settings, plus clean product tiles and fabric texture close-ups",
+      rules:["Product in use: real movement or rest in natural light, with the fabric clearly readable","Clean neutral ground and generous whitespace so the product leads","One short headline and a direct shop line, nothing else"],
+      copyRule:"Short, warm, benefit-led lines about comfort and moving through the day. Title case calls to action. No hype, puns or exclamation marks."},
+    tpl_tech:{group:"template",label:"Ecom Tech",color:"#3b82f6",brandName:"Ecom Tech",personality:"Technical, confident, pragmatic",audience:"Developers and engineering-led commerce teams who want a customizable, open commerce stack they control",message:"",format:"LinkedIn post, 1.91:1",reaction:"Trust the brand",style:"Bold flat graphic",palette:"Deep navy black #030712, charcoal panel #18181b, off-white #fafafa, platform blue #3b82f6, light blue #60a5fa for highlights",mood:"Precise, dark, technical",motif:"Modular cards and panels joined by thin lines, a blue highlight on the active node",avoid:"Logos or brand marks, shopping bags and carts, glowing robot brains, neon cyberpunk, stock photos of developers at laptops",zone:"left",
+      essence:"Commerce infrastructure for teams who build. Modular, controlled and specific.",
+      voice:"Direct and technical. Concrete platform language, real capabilities and operational proof. No lifestyle talk and no AI hype.",
+      typography:"A neutral modern sans with tight hierarchy and practical weights, plus a monospace for labels, code and data",
+      imagery:"Dark UI panels, dashboards, code snippets and architecture diagrams with crisp 1px borders, subtle gradients and blue emphasis. No lifestyle photography.",
+      rules:["Dark ground with modular panels on a clear grid and 1px borders","One blue accent marks the single most important element","Monospace labels and realistic code or data, legible at thumbnail size"],
+      copyRule:"Lead with the concrete capability or result. Use the technical terms the audience uses. No vague AI claims or shopping lifestyle language."},
     custom:{label:"Custom",color:"#8f8f8f",brandName:"",personality:"",audience:"",message:"",format:"Instagram feed, 4:5",reaction:"Stop scrolling and read",style:"",palette:"",mood:"",motif:"",avoid:"",zone:"top"}
   };
 
@@ -739,8 +775,8 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       ["shape","Shape language",["Geometric","Rounded and soft","Organic and fluid","Hand-drawn"]]
     ]}
   };
-  const ADJ_DEFAULT = {f3i:["Crisp","Premium","Sleek"],enel:["Airy","Crisp","Serene"],humark:["Bold","Tactile","Warm"],puratrust:["Crisp","Minimal","Premium"],ausvrn:["Luxurious","Moody","Premium"],sunsoul:["Warm","Vibrant","Dreamy"],human:["Warm","Candid","Tactile"],custom:[]};
-  const CAM_DEFAULT = {human:{shot:"Medium close-up",lens:"50mm standard",dof:"Shallow (f/1.8, soft bokeh)",light:"Soft window light"},sunsoul:{lens:"35mm street",light:"Golden hour"},enel:{light:"Soft window light"}};
+  const ADJ_DEFAULT = {f3i:["Crisp","Premium","Sleek"],enel:["Airy","Crisp","Serene"],humark:["Bold","Tactile","Warm"],puratrust:["Crisp","Minimal","Premium"],ausvrn:["Luxurious","Moody","Premium"],sunsoul:["Warm","Vibrant","Dreamy"],human:["Warm","Candid","Tactile"],tpl_agency:["Minimal","Crisp","Premium"],tpl_hotel:["Serene","Luxurious","Airy"],tpl_shop:["Airy","Warm","Candid"],tpl_tech:["Sleek","Futuristic","Crisp"],custom:[]};
+  const CAM_DEFAULT = {human:{shot:"Medium close-up",lens:"50mm standard",dof:"Shallow (f/1.8, soft bokeh)",light:"Soft window light"},sunsoul:{lens:"35mm street",light:"Golden hour"},enel:{light:"Soft window light"},tpl_hotel:{shot:"Extreme wide shot",light:"Golden hour"},tpl_shop:{light:"Overcast diffused"}};
   function detectMode(style){
     if(/photo|cinematic|documentary|shot/i.test(style||"")) return "photo";
     if(/3d|render/i.test(style||"")) return "render";
@@ -776,26 +812,44 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     return Object.assign({hooks:5,hookWords:7,titles:5,titleWords:5,extras:[],adjectives:(ADJ_DEFAULT[key]||[]).slice(),hook:"",headline:"",essence:"",voice:"",typography:"",imagery:"",adjCustom:"",camMode:"",cam:Object.assign({},CAM_DEFAULT[key]||{})}, base, edit || {});
   }
 
-  /* Brand chips */
-  function renderBrands(){
-    const row = $("#brandRow"); row.innerHTML = "";
-    Object.keys(brands).forEach(k => {
-      const b = brands[k];
-      const btn = document.createElement("button");
-      btn.type = "button"; btn.className = "brand"; btn.dataset.key = k;
-      btn.setAttribute("aria-pressed", k === current);
-      btn.innerHTML = '<span class="dot"></span><span></span>';
-      btn.querySelector(".dot").style.background = b.color || "#8f8f8f";
-      btn.lastChild.textContent = b.label;
-      btn.onclick = () => selectBrand(k);
-      row.appendChild(btn);
-    });
+  /* Brand menus */
+  function addOpt(parent, k){
+    const o = document.createElement("option"); o.value = k; o.textContent = brands[k].label; parent.appendChild(o);
   }
+  function renderBrands(){
+    const bs = $("#brandSel"), ts = $("#tplSel");
+    bs.innerHTML = ""; ts.innerHTML = "";
+    const ph1 = document.createElement("option"); ph1.value = ""; ph1.textContent = "Choose a brand"; ph1.disabled = true; bs.appendChild(ph1);
+    const ph2 = document.createElement("option"); ph2.value = ""; ph2.textContent = "Choose a template"; ph2.disabled = true; ts.appendChild(ph2);
+    const saved = [];
+    Object.keys(brands).forEach(k => {
+      if(PRESETS[k] && PRESETS[k].group === "template") addOpt(ts, k);
+      else if(PRESETS[k]) addOpt(bs, k);
+      else saved.push(k);
+    });
+    if(saved.length){
+      const g = document.createElement("optgroup"); g.label = "Saved";
+      saved.forEach(k => addOpt(g, k)); bs.appendChild(g);
+    }
+    syncMenus();
+  }
+  function syncMenus(){
+    const isTpl = !!(PRESETS[current] && PRESETS[current].group === "template");
+    const bs = $("#brandSel"), ts = $("#tplSel");
+    bs.value = isTpl ? "" : current; ts.value = isTpl ? current : "";
+    const col = (brands[current] && brands[current].color) || "#8f8f8f";
+    $("#brandWrap").classList.toggle("active", !isTpl);
+    $("#tplWrap").classList.toggle("active", isTpl);
+    const dot = (isTpl ? $("#tplWrap") : $("#brandWrap")).querySelector(".dot");
+    dot.style.background = col;
+  }
+  $("#brandSel").onchange = e => { if(e.target.value) selectBrand(e.target.value); };
+  $("#tplSel").onchange = e => { if(e.target.value) selectBrand(e.target.value); };
 
   function selectBrand(k){
     current = k; store.last = k; persist();
     state = JSON.parse(JSON.stringify(brandData(k)));
-    document.querySelectorAll(".brand").forEach(b => b.setAttribute("aria-pressed", b.dataset.key === k));
+    syncMenus();
     fillForm(); render();
   }
 
