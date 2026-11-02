@@ -15,6 +15,8 @@
 <link rel="stylesheet" href="grade.css">
 <script src="grade-data.js"></script>
 <script defer src="grade.js"></script>
+<link rel="stylesheet" href="compositions.css">
+<script defer src="compositions.js"></script>
 <link rel="stylesheet" href="caption-preview.css">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -324,6 +326,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
     <button type="button" class="apptab" role="tab" id="tab-character" aria-controls="panel-character" aria-selected="false" tabindex="-1" data-app="character">Character sheet</button>
     <button type="button" class="apptab" role="tab" id="tab-camera" aria-controls="panel-camera" aria-selected="false" tabindex="-1" data-app="camera">Camera</button>
     <button type="button" class="apptab" role="tab" id="tab-grade" aria-controls="panel-grade" aria-selected="false" tabindex="-1" data-app="grade">Color grade</button>
+    <button type="button" class="apptab" role="tab" id="tab-compositions" aria-controls="panel-compositions" aria-selected="false" tabindex="-1" data-app="compositions">Compositions</button>
   </div>
 </div>
 
@@ -627,6 +630,21 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
 <div id="panel-camera" role="tabpanel" aria-labelledby="tab-camera" hidden><div id="camera3dRoot"></div></div>
 <div id="panel-grade" role="tabpanel" aria-labelledby="tab-grade" hidden><div id="gradeRoot"></div></div>
+<div id="panel-compositions" role="tabpanel" aria-labelledby="tab-compositions" hidden><div id="compRoot"><div class="cp-main">
+  <div class="cp-bar" role="region" aria-label="Find a layout">
+    <div class="seg" role="group" aria-label="Filter layouts"><button type="button" data-cpfilter="all" aria-pressed="true">All 30</button><button type="button" data-cpfilter="mobile" aria-pressed="false">Mobile 22</button><button type="button" data-cpfilter="desktop" aria-pressed="false">Desktop 8</button></div>
+    <input type="search" class="cp-search" id="cpSearch" placeholder="Find a composition or use case" autocomplete="off" aria-label="Search layout names, uses, and prompts">
+    <span class="cp-count" id="cpCount" aria-live="polite">30 layouts</span>
+    <button type="button" class="btn" id="cpCopyAll">Copy all prompts</button>
+  </div>
+  <p class="cp-loading" id="cpLoading">Loading compositions.</p>
+  <div id="cpCollection"></div>
+  <p class="cp-none" id="cpNone" hidden>No layouts match that search. Try a subject such as photography, article, or archive.</p>
+  <section class="cp-sources" id="cpSources" aria-labelledby="cpSourcesTitle"><h2 id="cpSourcesTitle">Sources &amp; reading</h2><p>Composition studies informed by the linked sources. These are original interpretations, not replicas or claims of measured conversion impact. The Atlantic reference is a print design case study, translated here to a responsive web composition. Mobile studies use a 9:16 viewport; finished sites can continue vertically.</p><div class="cp-source-grid" id="cpSourceGrid"></div></section>
+</div>
+<dialog class="cp-dialog" id="cpDialog" aria-labelledby="cpDialogTitle"><div class="cp-dhead"><div><h2 id="cpDialogTitle"></h2><p id="cpDialogMeta"></p></div><button type="button" class="btn" id="cpClose" aria-label="Close expanded reference">Close</button></div><div class="cp-dgrid"><div class="cp-dpreview" id="cpDialogPreview"></div><div class="cp-dcopy" id="cpDialogCopy"></div></div></dialog>
+<div class="cp-toast" id="cpToast" role="status" aria-live="polite"></div>
+</div></div>
 
 <div id="panel-character" role="tabpanel" aria-labelledby="tab-character" hidden>
 <div class="mmain">
@@ -1702,8 +1720,9 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
       const on = b.dataset.app === t;
       b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
       if(on && focus) b.focus();
+      if(on){ const row = b.parentElement; if(row.scrollWidth > row.clientWidth) row.scrollLeft = b.offsetLeft - row.offsetLeft - (row.clientWidth - b.offsetWidth) / 2; }
     });
-    $("#panel-image").hidden = t !== "image"; $("#panel-motion").hidden = t !== "motion"; $("#panel-character").hidden = t !== "character"; $("#panel-camera").hidden = t !== "camera"; $("#panel-grade").hidden = t !== "grade";
+    $("#panel-image").hidden = t !== "image"; $("#panel-motion").hidden = t !== "motion"; $("#panel-character").hidden = t !== "character"; $("#panel-camera").hidden = t !== "camera"; $("#panel-grade").hidden = t !== "grade"; $("#panel-compositions").hidden = t !== "compositions";
     try{ localStorage.setItem(APPTAB_KEY, t); }catch(e){}
     if(t === "motion") mrender();
     if(t === "character") crender();
@@ -1975,7 +1994,7 @@ pre .e{color:#b45309;background:#fff7ed;border-radius:3px;padding:0 2px}
 
   buildStyleChips(); buildAdj(); buildZones(); renderBrands(); selectBrand(current);
   mReady = true;
-  let savedTab = "image"; try{ savedTab = ["motion","character","camera","grade"].includes(localStorage.getItem(APPTAB_KEY)) ? localStorage.getItem(APPTAB_KEY) : "image"; }catch(e){}
+  let savedTab = "image"; try{ savedTab = ["motion","character","camera","grade","compositions"].includes(localStorage.getItem(APPTAB_KEY)) ? localStorage.getItem(APPTAB_KEY) : "image"; }catch(e){}
   setAppTab(savedTab); mrender();
   loadConfig();
 })();
